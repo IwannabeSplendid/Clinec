@@ -1,0 +1,38 @@
+{% extends 'users/layout.html' %}
+
+{% block head %}
+
+<title>Make an appointment</title>
+
+{% endblock %}
+
+{%block body%}
+
+<h3>Appointment form</h3>
+
+<form action="{% url 'personal' %}" method="post">
+    {% csrf_token%}
+    <p>Name: {{user.patient.name}}</p>
+    <p>Surname: {{user.patient.surname}} </p>
+    <p>Surname: {{user.patient.phone_number}} </p>
+    <p>Medical services <select name="medical_service" required>
+        <option>Consultation</option>
+        <option>Napravleniye</option>
+    </select></p>
+    <p><strong>Doctor: </strong>
+    <select name="doctor" required>
+        {%for doctor in doctors%}
+        <option>{{doctor.surname}}</option>
+        {%empty%}
+            <i>There are no doctors available</i>
+        {%endfor%}
+    </select>
+        
+    </p>
+    <p>Date: <input type="date" name="date" required></p>
+    <p><input type="submit" value="Make an appointment"></p>
+</form>
+
+<p></p>
+<p><a href="{% url 'personal' %}">Personal page</a></p>
+{% endblock %}

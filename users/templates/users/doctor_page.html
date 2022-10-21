@@ -1,0 +1,102 @@
+{% extends 'users/layout.html' %}
+
+{% block head %}
+
+<title>{{request.user.username}}</title>
+
+<style>
+    .assigned_patients{
+        padding-left: 5%;
+        display: flex;
+        gap:20px;
+    }
+
+    .assigned_patients > *{
+        flex-flow: column;
+    }
+
+    #treatment-popup{
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        background-color: darkcyan;
+        border-radius: 10px;
+        visibility: hidden;
+    }
+</style>
+
+{% endblock %}
+
+{%block body%}
+
+<div style="border: 1px solid pink">
+<h3>personal page</h3>
+
+<p>Doctor {{request.user.doctor.name}} {{request.user.doctor.surname}}</p>
+
+<!-- iterating through doctor's patients - patient model's objects :: accessing through user, through user the doctor model (extension model), through it the patients-->
+{% for patient in request.user.doctor.assigned_patients.all %}
+<strong>Patients</strong>
+<div class="assigned_patients">
+    <div>{{patient}}</div>
+    <div>
+        Treatments
+        {% for treatment in patient.treatments.all %}
+            <div style="border: 1px solid red">
+                <p>Description: {{treatment.description}}</p>
+                <p>Medicaments: {{treatment.medicaments}}</p>
+                <p>Date: {{treatment.date}}</p>
+            </div>
+        {%empty%}
+        <i>There are no treatments yet</i>
+        {% endfor %}
+        <br><button onclick="show_treatment_popup()">Add treatment</button>
+    </div>
+</div>
+
+<!-- treatment popup :: has to be inside loop for patient info -->
+<div id="treatment-popup">
+    <form action="{%url 'personal' %}" method="post">
+        {% csrf_token %}
+        <p>Patient: <input type="text" name="patient" value="{{patient}}" readonly></p>
+        <input type="text" name="gov_id" value="{{patient.gov_id}}" hidden> <!-- hidden input to get the id of patient - to create treatment model object-->
+        <p>Description: <textarea name="description" id="" cols="30" rows="10" value="" required></textarea></p>
+        <p>Medicaments: <textarea name="medicaments" id="" cols="15" rows="2" value="" required></textarea></p>
+        <p>Set date: <input type="date" name="date" id="" required></p>
+        <p><input type="submit" value="Save treatment"></p>
+    </form>
+    <button onclick="close_treatment_popup()">Close</button>
+</div>
+
+{%empty%}
+
+<i>There are no assigned patients</i>
+
+{% endfor %}
+</div>
+
+<br>
+<div style="border: 1px solid blue">
+<h3>Appointments</h3>
+{% for appointment in user.doctor.appointments.all %}
+<p>{{appointment}}</p>
+{% empty %}
+<p><i>There are no appointments yet scheduled</i></p>
+{% endfor %}
+</div>
+
+<p></p>
+<p><a href="{% url 'logout' %}">log out</a></p>
+
+<script>
+    function show_treatment_popup(){
+        document.getElementById('treatment-popup').style.visibility="visible";
+    }
+
+    function close_treatment_popup(){
+        document.getElementById('treatment-popup').style.visibility="hidden";
+    }
+
+</script>
+
+{% endblock %}

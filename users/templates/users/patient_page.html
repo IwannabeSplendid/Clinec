@@ -1,0 +1,96 @@
+{% extends 'users/layout.html' %}
+
+{% block head %}
+
+<title>{{request.user.username}}</title>
+
+<style>
+    #popup-form{
+        visibility:hidden;
+        position: fixed;
+        top:20%;
+        left: 40%;
+        background-color: cadetblue;
+        border-radius: 6px;
+    }
+</style>
+
+{% endblock %}
+
+{%block body%}
+
+<div style="border: 1px solid pink">
+    <h3>Personal page</h3>
+
+    <p>{{request.user.patient.name}} {{request.user.patient.middle_name}} {{request.user.patient.surname}} </p>
+    <p>Government ID: {{request.user.patient.gov_id}}</p>
+    <p>Phone number: {{request.user.patient.phone_number}} </p>
+    <p>Email: {{request.user.patient.email}} </p>
+    <p>Address: {{request.user.patient.address}} </p>
+
+    <button onclick="show_popup()">Edit Info</button>
+
+    <p>{{user.profile}}</p>
+</div>
+<hr>
+
+<div>
+    <h3>Treatment plan</h3>
+    {%for treatment in request.user.patient.treatments.all%}
+        <div style="border: 1px solid red">
+            <p>Description: {{treatment.description}}</p>
+            <p>Medicaments: {{treatment.medicaments}}</p>
+            <p>Date: {{treatment.date}}</p>
+        </div>
+    {%empty%}
+    You have no treatments yet
+    {% endfor %}
+</div>
+
+<hr>
+
+<div style="border: 1px solid blueviolet">
+        <h3>Appointments</h3>
+        {% for appointment in user.patient.appointments.all %}
+        <p>{{appointment}}</p>
+        {% empty %}
+        <p><i>There are no appointments yet</i></p>
+        {% endfor %}
+
+    <p><a href="{% url 'appointment' %}"><i>make an appointment</i></a></p>
+</div>
+
+    <p><a href="{% url 'logout' %}">log out</a></p>
+
+
+<div id="popup-form">
+    please fill out form
+
+    <form action="{% url 'personal' %}" method="post">
+        {%csrf_token%}
+        <p>Government ID <input type="text" name="gov_id" required {% if request.user.patient.gov_id%} value="{{request.user.patient.gov_id}}" {%endif%}></p>
+        <p>Name <input type="text" name="name" required {% if request.user.patient.name%} value="{{request.user.patient.name}}" {%endif%}></p>
+        <p>Surname <input type="text" name="surname" required {% if request.user.patient.surname%} value="{{request.user.patient.surname}}" {%endif%}></p>
+        <p>Middle name <input type="text" name="middle_name" required {% if request.user.patient.middle_name%} value="{{request.user.patient.middle_name}}" {%endif%}></p>
+        <p>Address <input type="text" name="address" required {% if request.user.patient.address%} value="{{request.user.patient.address}}" {%endif%}></p>
+        <p>Phone number <input type="text" name="phone_number" required {% if request.user.patient.phone_number%} value="{{request.user.patient.phone_number}}" {%endif%}></p>
+        <p>Email <input type="email" name="email" required {% if request.user.patient.email%} value="{{request.user.patient.email}}" {%endif%}></p>
+        <p>Contact of a close person <input type="text" name="contact_close" required {% if request.user.patient.contact_close%} value="{{request.user.patient.contact_close}}" {%endif%}></p>
+
+        <p><input type="submit" value="Save"></p>
+    </form>
+    <button onclick="close_popup()">close</button>
+</div>
+
+<script>
+    function show_popup(){
+        document.getElementById('popup-form').style.visibility="visible";
+    }
+
+    function close_popup(){
+        document.getElementById('popup-form').style.visibility="hidden";
+    }
+
+</script>
+
+{% endblock %}
