@@ -13,6 +13,17 @@
         background-color: cadetblue;
         border-radius: 6px;
     }
+
+    #treatment-history{
+        visibility: hidden;
+        position: fixed;
+        top: 20%;
+        left: 20%;
+        width: 60%;
+        background-color: darkseagreen;
+        border-radius: 2%;
+        border: 1px solid black;
+    }
 </style>
 
 {% endblock %}
@@ -36,28 +47,47 @@
 
 <div>
     <h3>Treatment plan</h3>
-    {%for treatment in request.user.patient.treatments.all%}
+    {%for treatment in request.user.patient.treatments.all|dictsortreversed:"date"%}
+        <div style="border: 1px solid red">
+            {%if forloop.counter == 1%}
+                <p>Description: {{treatment.description}}</p>
+                <p>Medicaments: {{treatment.medicaments}}</p>
+                <p>Date: {{treatment.date}}</p>
+            {%endif%}
+        </div>
+    {%empty%}
+        You have no treatments yet
+    {% endfor %}
+
+    <p><button onclick="show_treatment_history()">View Treatment History</button></p>
+</div>
+
+
+<div id="treatment-history" >
+    <h3>Treatment plan</h3>
+    {%for treatment in request.user.patient.treatments.all|dictsortreversed:"date"%}
         <div style="border: 1px solid red">
             <p>Description: {{treatment.description}}</p>
             <p>Medicaments: {{treatment.medicaments}}</p>
             <p>Date: {{treatment.date}}</p>
         </div>
     {%empty%}
-    You have no treatments yet
+        You have no treatments yet
     {% endfor %}
+    <p><button onclick="close_treatment_history()">Close</button></p>
 </div>
 
 <hr>
 
 <div style="border: 1px solid blueviolet">
         <h3>Appointments</h3>
-        {% for appointment in user.patient.appointments.all %}
-        <p>{{appointment}}</p>
+        {% for appointment in user.patient.appointments.all|dictsort:"date" %}
+            <p>{{appointment}}</p>
         {% empty %}
-        <p><i>There are no appointments yet</i></p>
+            <p><i>There are no appointments yet</i></p>
         {% endfor %}
 
-    <p><a href="{% url 'appointment' %}"><i>make an appointment</i></a></p>
+    <form action="{% url 'appointment' %}"><input type="submit" value="Make an appointment"></form>
 </div>
 
     <p><a href="{% url 'logout' %}">log out</a></p>
@@ -83,12 +113,22 @@
 </div>
 
 <script>
+    //popup to edit patient info
     function show_popup(){
         document.getElementById('popup-form').style.visibility="visible";
     }
 
     function close_popup(){
         document.getElementById('popup-form').style.visibility="hidden";
+    }
+
+    //popup to edit
+    function show_treatment_history(){
+        document.getElementById('treatment-history').style.visibility = "visible";
+    }
+
+    function close_treatment_history(){
+        document.getElementById('treatment-history').style.visibility = "hidden";
     }
 
 </script>

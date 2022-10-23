@@ -1,5 +1,4 @@
 {% extends 'users/layout.html' %}
-
 {% block head %}
 
 <title>{{request.user.username}}</title>
@@ -23,9 +22,19 @@
         border-radius: 10px;
         visibility: hidden;
     }
+    
+    #treatment-history{
+        visibility: hidden;
+        position:fixed;
+        top:20%;
+        left:20%;
+        width:40%;
+        background-color: darkorchid;
+        border-radius: 12px;
+    }
 </style>
-
 {% endblock %}
+
 
 {%block body%}
 
@@ -41,17 +50,36 @@
     <div>{{patient}}</div>
     <div>
         Treatments
-        {% for treatment in patient.treatments.all %}
-            <div style="border: 1px solid red">
+        {% for treatment in patient.treatments.all|dictsortreversed:"date" %} <!-- iterating through treatments sorted by date, and showing only the first one (last assigned treatment) -->
+        <div style="border: 1px solid red">
+            {% if forloop.counter == 1 %}
                 <p>Description: {{treatment.description}}</p>
                 <p>Medicaments: {{treatment.medicaments}}</p>
                 <p>Date: {{treatment.date}}</p>
-            </div>
-        {%empty%}
+            {%endif%}
+        </div>
+    {%empty%}
         <i>There are no treatments yet</i>
-        {% endfor %}
-        <br><button onclick="show_treatment_popup()">Add treatment</button>
+    {% endfor %}
+
+    <p><button onclick="show_treatment_popup()">Add treatment</button></p>    
+    <p><button onclick="show_treatment_history()">View treatment history</button></p>
     </div>
+</div>
+
+<!-- treatment history -->
+<div id="treatment-history">
+    Treatments
+    {% for treatment in patient.treatments.all|dictsortreversed:"date" %} <!-- sorting by date in reverse -->
+        <div style="border: 1px solid red">
+            <p>Description: {{treatment.description}}</p>
+            <p>Medicaments: {{treatment.medicaments}}</p>
+            <p>Date: {{treatment.date}}</p>
+        </div>
+    {%empty%}
+        <i>There are no treatments yet</i>
+    {% endfor %}
+    <p><button onclick="close_treatment_history()">close</button></p>
 </div>
 
 <!-- treatment popup :: has to be inside loop for patient info -->
@@ -69,20 +97,19 @@
 </div>
 
 {%empty%}
-
-<i>There are no assigned patients</i>
-
+    <i>There are no assigned patients</i>
 {% endfor %}
 </div>
 
 <br>
+
 <div style="border: 1px solid blue">
-<h3>Appointments</h3>
-{% for appointment in user.doctor.appointments.all %}
-<p>{{appointment}}</p>
-{% empty %}
-<p><i>There are no appointments yet scheduled</i></p>
-{% endfor %}
+    <h3>Appointments</h3>
+    {% for appointment in user.doctor.appointments.all|dictsort:"date" %}
+        <p>{{appointment}}</p>
+    {% empty %}
+        <p><i>There are no appointments yet scheduled</i></p>
+    {% endfor %}
 </div>
 
 <p></p>
@@ -95,6 +122,15 @@
 
     function close_treatment_popup(){
         document.getElementById('treatment-popup').style.visibility="hidden";
+    }
+
+    //popup to edit
+    function show_treatment_history(){
+        document.getElementById('treatment-history').style.visibility = "visible";
+    }
+
+    function close_treatment_history(){
+        document.getElementById('treatment-history').style.visibility = "hidden";
     }
 
 </script>

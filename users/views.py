@@ -97,6 +97,7 @@ def appointment(request):
             medical_service = request.POST["medical_service"],
             date = request.POST["date"]
         )
+        return HttpResponseRedirect(reverse('personal'))
     
     return render(request, 'users/appointment.html', {
         'doctors' :  Doctor.objects.all()

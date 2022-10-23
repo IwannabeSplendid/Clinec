@@ -10,7 +10,7 @@
 
 <h3>Appointment form</h3>
 
-<form action="{% url 'personal' %}" method="post">
+<form action="{% url 'appointment' %}" method="post">
     {% csrf_token%}
     <p>Name: {{user.patient.name}}</p>
     <p>Surname: {{user.patient.surname}} </p>
