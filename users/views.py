@@ -78,7 +78,6 @@ def personal(request):
                 date=request.POST["date"]
             )
 
-
         return render(request, 'users/doctor_page.html')
     return HttpResponseRedirect(reverse('admin:index'))
 

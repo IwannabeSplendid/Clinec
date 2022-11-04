@@ -122,3 +122,10 @@ STATIC_URL = '/static/'
 
 #to use our custom model for authentication
 AUTH_USER_MODEL = 'users.User'
+
+#to save images of models
+#base url
+MEDIA_URL = '/media/'
+
+#to save media in the media file
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media/')

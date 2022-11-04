@@ -41,6 +41,9 @@
 <div style="border: 1px solid pink">
 <h3>personal page</h3>
 
+<p><img src="{{request.user.doctor.photo.url}}" alt="{{request.user.doctor.photo.url}}" width="200px"></p>
+
+
 <p>Doctor {{request.user.doctor.name}} {{request.user.doctor.surname}}</p>
 
 <!-- iterating through doctor's patients - patient model's objects :: accessing through user, through user the doctor model (extension model), through it the patients-->

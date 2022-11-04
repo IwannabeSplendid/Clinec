@@ -1,8 +1,3 @@
-from ast import Param
-from posixpath import supports_unicode_filenames
-from random import choices
-from sqlite3 import IntegrityError
-from unicodedata import name
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -18,13 +13,29 @@ class User(AbstractUser):
     #permissions
 
 
+
 #extended models of users
 
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    date_of_birth = models.DateField(blank=True)
+    IIN = models.CharField(max_length=12, blank=True)
+    gov_id = models.CharField(max_length=12,blank=True)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50, blank=True)
+    middle_name = models.CharField(max_length=50, blank=True)
     phone_number = models.CharField(max_length=11,blank=True)
+    department_ID = models.CharField(max_length=6, blank=True)
+    spec_ID = models.CharField(max_length=6, blank=True)
+    experience = models.CharField(max_length=2, blank=True)
+    photo = models.ImageField(upload_to='images', blank=True)
+    category=models.CharField(max_length=10, blank=True)
+    appointment_price = models.CharField(max_length = 7, blank=True)
+    working_schedule = models.CharField(max_length = 50, blank=True)
+    education = models.CharField(max_length=30, blank=True)
+    rating = models.CharField(max_length = 2, blank=True)
+    address = models.CharField(max_length = 30, blank=True)
+    homepage = models.URLField(blank=True)
 
     def __str__(self):
         return f"Doctor {str(self.user)}"
@@ -33,14 +44,19 @@ class Doctor(models.Model):
 #patient
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, primary_key=True)
+    date_of_birth = models.DateField(blank=True)
+    IIN = models.CharField(max_length=12, blank=True)
     gov_id = models.CharField(max_length=12,blank=True)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50, blank=True)
     middle_name = models.CharField(max_length=50, blank=True)
-    address = models.CharField(max_length=50, blank=True)
-    phone_number = models.CharField(max_length=11,blank=True)
-    email = models.EmailField(blank=True)
+    blood_group = models.CharField(max_length=2, blank=True)
     contact_close = models.CharField(max_length=11,blank=True)
+    phone_number = models.CharField(max_length=11,blank=True)
+    address = models.CharField(max_length=50, blank=True)
+    marital_status = models.CharField(max_length=10, blank=True)
+    registration_date = models.DateField()
+    email = models.EmailField(blank=True)
 
     assigned_doctor = models.ForeignKey(Doctor, related_name='assigned_patients', on_delete=models.PROTECT, default = Doctor.objects.get(surname="House").pk) #why added pk?
 
