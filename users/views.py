@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 
 from django.shortcuts import render
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 
-from .models import Patient, Doctor
+from .models import Patient, Doctor, Chatrooms, Messages
 from .models import Appointment, Treatment
 
 # Create your views here.
@@ -16,6 +16,7 @@ def is_patient(user):
 
 def is_doctor(user):
     return user.groups.filter(name='Doctor').exists()
+    
 
 def index(request):
     if not request.user.is_authenticated:
@@ -52,6 +53,10 @@ def personal(request):
 
     if is_patient(user):
 
+        #if there is no chatroom of the patient to the doctor, create one
+        if not user.patient.chatrooms.first(): 
+            Chatrooms.objects.create(patient = user.patient, doctor = user.patient.assigned_doctor)
+
         #if form submitted (patient info form)
         if request.method == "POST":
             user.patient.gov_id = request.POST["gov_id"]
@@ -66,19 +71,10 @@ def personal(request):
             return HttpResponseRedirect(reverse('personal'))
             
         return render(request, 'users/patient_page.html')
+
     elif is_doctor(user):
-
-        #if form submitted (treatment form)
-        if request.method=="POST":
-            Treatment.objects.create(
-                patient=user.doctor.assigned_patients.get(gov_id=request.POST["gov_id"]),
-                doctor=user.doctor,
-                medicaments=request.POST["medicaments"],
-                description=request.POST["description"],
-                date=request.POST["date"]
-            )
-
         return render(request, 'users/doctor_page.html')
+
     return HttpResponseRedirect(reverse('admin:index'))
 
 def logout_view(request):
@@ -102,4 +98,58 @@ def appointment(request):
         'doctors' :  Doctor.objects.all()
     })
 
-#TODO
+#treatment
+def treatment(request):
+    user = request.user
+
+    #if form submitted (treatment form)
+    if request.method=="POST":
+        Treatment.objects.create(
+            patient=user.doctor.assigned_patients.get(gov_id=request.POST["gov_id"]),
+            doctor=user.doctor,
+            medicaments=request.POST["medicaments"],
+            description=request.POST["description"],
+            date=request.POST["date"]
+        )
+
+    return render(request, 'users/doctor_page.html')
+
+
+
+#sens message to chat
+def send(request, chatroom_id):
+    
+    if request.method == "POST":
+        user = request.user
+
+        if is_patient(user):
+            Messages.objects.create(
+                user = user,
+                message_text = request.POST["message_text"],
+                chatroom = Chatrooms.objects.get(id=chatroom_id),
+                username = str(user.patient)
+            )
+        
+        if is_doctor(user):
+            Messages.objects.create(
+                user = user,
+                message_text = request.POST["message_text"],
+                chatroom = Chatrooms.objects.get(id=chatroom_id),
+                username = str(user.doctor)
+            )
+
+        return HttpResponseRedirect(reverse('personal'))
+
+
+def updateMessages(request, chatroom_id):
+    #get messages
+    chatroom = Chatrooms.objects.get(id=chatroom_id)
+    messages = chatroom.messages
+
+    user = request.user
+
+    #pass the message info from django model to js
+    return JsonResponse({
+        'messages' : list(messages.values())
+    })
+

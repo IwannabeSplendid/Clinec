@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from datetime import datetime
 
 # Create your models here.
 
@@ -9,8 +10,6 @@ class User(AbstractUser):
     #model fields to change (need? or make via ordinary models of patients and doctors?)
     name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
-
-    #permissions
 
 
 
@@ -79,8 +78,31 @@ class Treatment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='treatments')
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='treatments')
     description = models.CharField(max_length=200, default='Description empty')
-    medicaments = models.CharField(max_length=50, default='Mediacements empty')
+    medicaments = models.CharField(max_length=50, default='Medicements empty')
     date = models.DateField()
 
     def __str__(self):
         return f"Patient: {self.patient.name}; Doctor: {self.doctor.surname}; date: {self.date}"
+
+
+#a chatroom between a patient and a doctor
+class Chatrooms(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='chatrooms')
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='chatrooms')
+
+    def __str__(self):
+        return f"Chatroom of Patient: {self.patient.name} - Doctor: {self.doctor.surname}"
+
+
+#messages in chat
+class Messages(models.Model):
+    chatroom = models.ForeignKey(Chatrooms, on_delete=models.CASCADE, related_name='messages')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='messages')
+    message_text = models.CharField(max_length=1000000)
+    date = models.DateField(default=datetime.now)
+    
+    #username to show in chat
+    username = models.CharField(max_length=50, default="no_username")
+
+    def __str__(self):
+            return f"{self.message_text}"
