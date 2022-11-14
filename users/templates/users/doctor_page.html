@@ -33,7 +33,7 @@
             border-radius: 12px;
         }
 
-        #chat_button{
+        #chat-button{
             position: fixed;
             bottom: 5%;
             right: 5%;            
@@ -49,15 +49,20 @@
             background-color: white;
 
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
             justify-content: space-between;
 
             visibility: hidden;
         }
 
-        .single-chat-div{
+        .chatroom-div{
             border: 1px solid black;
+            position: fixed;
+            bottom: 8%;
+            right: 5%;
+
+            visibility: hidden;
         }
     </style>
 {% endblock %}
@@ -159,39 +164,44 @@
 
     <!-- chatdiv -->
     <div id="chats">
-
-        <!-- show a chat with each patient -->
-        {% for patient in request.user.doctor.assigned_patients.all %}
-
-            <div class="single-chat-div">
-
-                <i>Chat with {{patient}}</i>
-
-                <!-- div of messages -->
-                <div class="chat-messages">
-                </div>
-
-                <!-- hidden input to pass chatroom id to django -->
-                <input type="hidden" value="{{patient.chatrooms.first.id}}">
-
-                <!-- to show messages, design as a real chat -->
-                <form method="post" class="chat-form">
-                    {%csrf_token%}
-                    <input type="text" value="" name="message" class="message_text">  <!--classes, not id-s, because there are going to be a form per patient, and the values are accessed as the form's children that belong to those classes-->
-                    <input type="submit" value="send" id="submit_button">
-
-                    <!-- hidden inputs to pass chatroom_id via js-ajax -->
-                    <input type="hidden" value="{{patient.chatrooms.first.id}}" class="chatroom_id">
-                </form>
-            </div>
-
+        {% for patient in request.user.doctor.assigned_patients.all %} 
+            <p><button class="chat-buttons" onclick="chat_show($(this).parent().children('input').val())">{{patient}}</button>
+                <input type="hidden" value="{{patient.chatrooms.first.id}}"></p>
         {% empty %}
-            <p>There are no assigned patients</p>
+            You have not patients yet
         {% endfor %}
-
     </div>
 
-    <button id="chat_button" onclick="chat()">Chats with Patients</button>
+    <button id="chat-button">Chats with Patients</button>
+
+
+    <!-- chat popups with each patient -->
+    {% for patient in request.user.doctor.assigned_patients.all %}
+
+        <div class="chatroom-div" id="chatroom-{{patient.chatrooms.first.id}}">
+
+            <i>Chat with {{patient}}</i>
+
+            <!-- div of messages -->
+            <div class="chat-messages" id="chat-messages-{{patient.chatrooms.first.id}}">
+            </div>
+
+            <!-- to show messages, design as a real chat -->
+            <form method="post" class="chat-form">
+                {%csrf_token%}
+                <input type="text" value="" name="message" class="message_text">  <!--classes, not id-s, because there are going to be a form per patient, and the values are accessed as the form's children that belong to those classes-->
+                <input type="submit" value="send" id="submit_button">
+
+                <!-- hidden inputs to pass chatroom_id via js-ajax -->
+                <input type="hidden" value="{{patient.chatrooms.first.id}}" class="chatroom_id">
+            </form>
+
+            <!-- button when clicked: close div and clear interval -->
+            <button id="close-chat-btn-{{patient.chatrooms.first.id}}">Close chat</button>
+        </div>
+    {% empty %}
+        <p>There are no assigned patients</p>
+    {% endfor %}
 
 
 <!-- JS -->
@@ -201,18 +211,57 @@
         let chat_opened = false;
 
         //open and close chat
-        function chat(){
+        $('#chat-button').click(function(){
+
             if (!chat_opened){
                 document.getElementById('chats').style.visibility='visible';
-                document.getElementById('chat_button').textContent = 'Close';
+                document.getElementById('chat-button').textContent = 'Close';
                 chat_opened = true;
             }
             else{
                 document.getElementById('chats').style.visibility='hidden';
-                document.getElementById('chat_button').textContent = 'Chats with Patients';
+                document.getElementById('chat-button').textContent = 'Chats with Patients';
                 chat_opened=false;
             }
+        })
+
+
+        //function to show chatroom
+        function chat_show(chatroom_id){
+            //console.log(chatroom_id);
+
+            //show the chatroom
+            $('#chatroom-'+chatroom_id).css("visibility", "visible");
+
+            let chat_interval = setInterval(function(){
+
+                    $.ajax({
+                        type : 'GET',
+                        url : 'updateMessages/'+ chatroom_id,
+
+                        //take response (contains info of messages in chatroom) and show messages
+                        success : function(response){
+                            //empty the div
+                            $('.chat-messages').empty();
+
+                            //console.log(response.user)
+
+                            for (var key in response.messages){
+                                temp = "<hr><p><b>"+response.messages[key].username+"</b></p> <p>"+response.messages[key].message_text+"</p> <p>"+response.messages[key].date+"</p>";
+                                $('#chat-messages-'+chatroom_id).append(temp);
+                            }
+                        }
+                    });
+
+                }, 1000);
+
+            $('#close-chat-btn-'+chatroom_id).click(function(){
+                $(this).parent().css('visibility', 'hidden'); 
+                clearInterval(chat_interval);
+            });
+
         }
+
 
         //function using jquery syntax to (constantly check inputs from page? async-ly?)
         $(document).on('submit', '.chat-form', function(e){
@@ -220,7 +269,7 @@
             //prevent automatic refreshment when submitting - maybe the reason using ajax here
             e.preventDefault()
             
-            console.log('chatroom id is' + $(this).children('.chatroom_id').val())
+            //console.log('chatroom id is' + $(this).children('.chatroom_id').val())
 
             $.ajax({
                 type: 'POST',
@@ -243,7 +292,45 @@
         });
 
         //function to update the div of chat every second (1000 ms)
-        $(document).ready(function(){
+
+    </script>
+
+    <!-- JS to show 'make-new-treatment' and 'see-treatment-history' popups -->
+    <script>
+        function show_treatment_popup(){
+            document.getElementById('treatment-popup').style.visibility="visible";
+        }
+
+        function close_treatment_popup(){
+            document.getElementById('treatment-popup').style.visibility="hidden";
+        }
+
+        //popup to edit
+        function show_treatment_history(){
+            document.getElementById('treatment-history').style.visibility = "visible";
+        }
+
+        function close_treatment_history(){
+            document.getElementById('treatment-history').style.visibility = "hidden";
+        }
+
+    </script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
             setInterval(function(){
 
                 //for each div in 'chat-messages' class
@@ -272,30 +359,7 @@
                     });
                 });
 
-            }, 1000);
-        });
+                }, 1000);
 
-    </script>
 
-    <!-- JS to show 'make-new-treatment' and 'see-treatment-history' popups -->
-    <script>
-        function show_treatment_popup(){
-            document.getElementById('treatment-popup').style.visibility="visible";
-        }
-
-        function close_treatment_popup(){
-            document.getElementById('treatment-popup').style.visibility="hidden";
-        }
-
-        //popup to edit
-        function show_treatment_history(){
-            document.getElementById('treatment-history').style.visibility = "visible";
-        }
-
-        function close_treatment_history(){
-            document.getElementById('treatment-history').style.visibility = "hidden";
-        }
-
-    </script>
-
-{% endblock %}
+ -->
