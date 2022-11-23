@@ -1,0 +1,248 @@
+{% extends 'users/layout.html' %}
+
+{% block head %}
+
+    <title>{{request.user.username}}</title>
+
+    <style>
+        #popup-form{
+            visibility:hidden;
+            position: fixed;
+            top:20%;
+            left: 40%;
+            background-color: cadetblue;
+            border-radius: 6px;
+        }
+
+        #treatment-history{
+            visibility: hidden;
+            position: fixed;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            background-color: darkseagreen;
+            border-radius: 2%;
+            border: 1px solid black;
+        }
+
+        #chat_button{
+            position: fixed;
+            bottom: 5%;
+            right: 5%;            
+
+        }
+
+        #chat{
+            position: fixed;
+            bottom: 8%;
+            right: 5%;
+            border: 1px solid black;
+            border-radius: 5%;
+
+            visibility: hidden;
+        }
+    </style>
+
+{% endblock %}
+
+{%block body%}
+
+    <!-- info of the patient -->
+    <div style="border: 1px solid pink">
+        <h3>Personal page</h3>
+
+        <p>{{request.user.patient.name}} {{request.user.patient.middle_name}} {{request.user.patient.surname}} </p>
+        <p>Government ID: {{request.user.patient.gov_id}}</p>
+        <p>Phone number: {{request.user.patient.phone_number}} </p>
+        <p>Email: {{request.user.patient.email}} </p>
+        <p>Address: {{request.user.patient.address}} </p>
+
+        <button onclick="show_popup()">Edit Info</button>
+
+        <p>{{user.profile}}</p>
+    </div>
+    <hr>
+
+    <!-- the most recent treatment of the patient -->
+    <div>
+        <h3>Treatment plan</h3>
+        {%for treatment in request.user.patient.treatments.all|dictsortreversed:"date"%}
+            <div style="border: 1px solid red">
+                {%if forloop.counter == 1%}
+                    <p>Description: {{treatment.description}}</p>
+                    <p>Medicaments: {{treatment.medicaments}}</p>
+                    <p>Date: {{treatment.date}}</p>
+                {%endif%}
+            </div>
+        {%empty%}
+            You have no treatments yet
+        {% endfor %}
+
+        <p><button onclick="show_treatment_history()">View Treatment History</button></p>
+    </div>
+
+    <hr>
+
+    <!-- scheduled (and past) appointments -->
+    <div style="border: 1px solid blueviolet">
+            <h3>Appointments</h3>
+            {% for appointment in user.patient.appointments.all|dictsort:"date" %}
+                <p>{{appointment}}</p>
+            {% empty %}
+                <p><i>There are no appointments yet</i></p>
+            {% endfor %}
+
+        <form action="{% url 'search_appointment' %}"><input type="submit" value="Make an appointment"></form>
+    </div>
+
+        <p><a href="{% url 'logout' %}">log out</a></p>
+
+
+    <!-- popup to edit personal info -->
+    <div id="popup-form">
+        please fill out form
+
+        <form action="{% url 'personal' %}" method="post">
+            {%csrf_token%}
+            <p>Government ID <input type="text" name="gov_id" required {% if request.user.patient.gov_id%} value="{{request.user.patient.gov_id}}" {%endif%}></p>
+            <p>Name <input type="text" name="name" required {% if request.user.patient.name%} value="{{request.user.patient.name}}" {%endif%}></p>
+            <p>Surname <input type="text" name="surname" required {% if request.user.patient.surname%} value="{{request.user.patient.surname}}" {%endif%}></p>
+            <p>Middle name <input type="text" name="middle_name" required {% if request.user.patient.middle_name%} value="{{request.user.patient.middle_name}}" {%endif%}></p>
+            <p>Address <input type="text" name="address" required {% if request.user.patient.address%} value="{{request.user.patient.address}}" {%endif%}></p>
+            <p>Phone number <input type="text" name="phone_number" required {% if request.user.patient.phone_number%} value="{{request.user.patient.phone_number}}" {%endif%}></p>
+            <p>Email <input type="email" name="email" required {% if request.user.patient.email%} value="{{request.user.patient.email}}" {%endif%}></p>
+            <p>Contact of a close person <input type="text" name="contact_close" required {% if request.user.patient.contact_close%} value="{{request.user.patient.contact_close}}" {%endif%}></p>
+
+            <p><input type="submit" value="Save"></p>
+        </form>
+        <button onclick="close_popup()">close</button>
+    </div>
+
+    <!-- treatment-history popup -->
+    <div id="treatment-history" >
+        <h3>Treatment plan</h3>
+        {%for treatment in request.user.patient.treatments.all|dictsortreversed:"date"%}
+            <div style="border: 1px solid red">
+                <p>Description: {{treatment.description}}</p>
+                <p>Medicaments: {{treatment.medicaments}}</p>
+                <p>Date: {{treatment.date}}</p>
+            </div>
+        {%empty%}
+            You have no treatments yet
+        {% endfor %}
+        <p><button onclick="close_treatment_history()">Close</button></p>
+    </div>
+
+
+    <!-- chat with the doctor -->
+    <div id="chat">
+        <i>Chat with {{request.user.patient.assigned_doctor}}</i>
+        <!-- div of messages -->
+        <div id="chat-messages"></div>
+
+        <!-- form to send message -->
+        <form method="post" id="chat-form">
+            {%csrf_token%}
+            <input type="text" value="" name="message" id="message_text">
+            <input type="submit" value="send" id="submit_button">
+        </form>
+    </div>
+
+    <button id="chat_button" onclick="chat()">Chat with Doctor</button>
+
+
+
+
+<!-- JS ------------------------------------>
+
+    <!-- chat JS -->
+    <script>
+        let chat_opened = false;
+
+        function chat(){
+
+            if (!chat_opened){
+                document.getElementById('chat').style.visibility='visible';
+                document.getElementById('chat_button').textContent = 'Close';
+                chat_opened = true;
+            }
+            else{
+                document.getElementById('chat').style.visibility='hidden';
+                document.getElementById('chat_button').textContent = 'Chat with Doctor';
+                chat_opened=false;
+            }
+        }
+
+        //function using jquery syntax to (constantly check inputs from page? async-ly?)
+        $(document).on('submit', '#chat-form', function(e){
+
+            //prevent automatic refreshment when submitting - maybe the reason using ajax here
+            e.preventDefault()
+
+            $.ajax({
+                type: 'POST',
+                url: 'send/{{request.user.patient.chatrooms.first.id}}',
+                data:{
+                    message_text : $('#message_text').val(),
+                    csrfmiddlewaretoken : $('input[name=csrfmiddlewaretoken]').val(),
+                },
+                success : function(data){
+                    console.log(data)
+                }
+            });
+
+            document.getElementById('message_text').value = '';
+        });
+
+
+        //function to update the div of chat every second (1000 ms)
+        $(document).ready(function(){
+            setInterval(function(){
+                
+                $.ajax({
+                    type : 'GET',
+                    url : 'updateMessages/{{request.user.patient.chatrooms.first.id}}',
+
+                    //take response (contains info of messages in chatroom) and show messages
+                    success : function(response){
+                        //empty the div
+                        $('#chat-messages').empty();
+
+                        //console.log(response.user)
+
+                        for (var key in response.messages){
+                            temp = "<hr><p><b>"+response.messages[key].username+"</b></p> <p>"+response.messages[key].message_text+"</p> <p>"+response.messages[key].date+"</p>";
+                            $('#chat-messages').append(temp);
+                        }
+                    }
+                })
+
+            }, 1000);
+        });
+
+    </script>
+
+
+    <!-- JS to show and close 'edit-personal-info' and 'see-treatment-history' popupss -->
+    <script>
+        //popup to edit patient info
+        function show_popup(){
+            document.getElementById('popup-form').style.visibility="visible";
+        }
+
+        function close_popup(){
+            document.getElementById('popup-form').style.visibility="hidden";
+        }
+
+        //popup to show treatment history
+        function show_treatment_history(){
+            document.getElementById('treatment-history').style.visibility = "visible";
+        }
+
+        function close_treatment_history(){
+            document.getElementById('treatment-history').style.visibility = "hidden";
+        }
+
+    </script>
+
+{% endblock %}

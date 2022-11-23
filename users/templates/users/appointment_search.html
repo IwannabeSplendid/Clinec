@@ -1,0 +1,38 @@
+{% extends 'users/layout.html' %}
+
+{% block head %}
+
+<title>Make an appointment</title>
+
+{% endblock %}
+
+{%block body%}
+
+<h3>Search for appointment</h3>
+
+<div class="container">
+
+    <div>
+    
+        <br/>
+    
+        {% comment %} <form action="{% url 'search_spec' %}" class="form-inline" method="get"> {% endcomment %}
+        <form action="">
+                <input type="text" name="search" placeholder="Keywords"">
+                <input type="submit" value="Search">
+            </form>
+    
+        <br/>
+    
+        {% for spec in specs %}
+    
+        <h3> <a href={% url 'search_spec' id=spec.id %}>{{spec.name}} </a></h3>
+        <hr>
+    
+        {% endfor %}
+    
+    </div>
+    
+</div>
+
+{% endblock %}
