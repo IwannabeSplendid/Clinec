@@ -17,16 +17,16 @@
         <br/>
     
         {% comment %} <form action="{% url 'search_spec' %}" class="form-inline" method="get"> {% endcomment %}
-        <form action="">
-                <input type="text" name="search" placeholder="Keywords"">
+        <form method="get">
+                <input type="text" name="search" placeholder="Keywords">
                 <input type="submit" value="Search">
-            </form>
+        </form>
     
         <br/>
     
         {% for spec in specs %}
     
-        <h3> <a href={% url 'search_spec' id=spec.id %}>{{spec.name}} </a></h3>
+        <h3> <a href={% url 'search' name=spec.id object='spec'%}>{{spec.name}} </a></h3>
         <hr>
     
         {% endfor %}

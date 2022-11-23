@@ -10,9 +10,9 @@
 
 <h3>Appointment form</h3>
 
-<form action="{% url 'appointment' id=doctor.user_id %}" method="post">
+<form method="post">
     {% csrf_token%}
-    <p>Name: <input type="text" name="name" required> {{user.patient.name}}</p>
+    {% comment %} <p>Name: <input type="text" name="name" required> {{user.patient.name}}</p>
     <p>Surname: {{user.patient.surname}} </p>
     <p>Contact Phone: {{user.patient.phone_number}} </p>
     <p>Medical services <select name="medical_service" required>
@@ -30,7 +30,9 @@
         
     </p>
     <p>Date: <input type="date" name="date" required></p>
-    <p><input type="submit" value="Make an appointment"></p>
+    <p><input type="submit" value="Make an appointment"></p> {% endcomment %}
+    {{ form.as_p }}
+    <p><input type="submit" value="Make an appointment"></p> 
 </form>
 
 <p></p>

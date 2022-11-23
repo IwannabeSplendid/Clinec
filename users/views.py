@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 
 from .models import Patient, Doctor, Chatrooms, Messages
 from .models import Appointment, Treatment, Specialization
+from .forms import AppointmentForm
 
 # Create your views here.
 
@@ -85,37 +86,48 @@ def logout_view(request):
 #search for appointment
 def search_appointment(request):
     #search bar
-    if request.method == 'POST':
-        keyword = request.POST['search']
-        print(keyword)
-    print(request.POST['search'])
+    if 'search' in request.GET:
+        keyword = request.GET['search']
+        doctor_names = Doctor.objects.values_list('name', flat = True)
+        specs = Specialization.objects.values_list('name', flat = True)
+        if keyword in doctor_names: 
+            return redirect('search', object = 'doctor', name = keyword)
+        elif keyword in specs:
+            id = Specialization.objects.filter(name=keyword).values_list('id',flat=True)[0]
+            return redirect('search', object = 'spec', name = str(id))
+
     return render(request, 'users/appointment_search.html', {
         'specs' :  Specialization.objects.all()
     })
 
 
 #website with doctor with giiven specialization
-def search_spec(request, id):
-    spec = Specialization.objects.get(id=id)
-    doctors = Doctor.objects.filter(spec = spec)    
-    return render(request, 'users/search_spec.html', {
-        'doctors' :  doctors
+def search(request, object, name):
+    if object == 'spec':
+        id = int(name)
+        spec = Specialization.objects.get(id=id)
+        doctors = Doctor.objects.filter(spec = spec)    
+    elif object == 'doctor':
+        doctors = Doctor.objects.filter(name = name)    
+    return render(request, 'users/search.html', {
+        'doctors' :  doctors, 
     })
     
 #appointment
+@login_required
 def appointment(request, id):
-    
     if request.method == 'POST':
-        Appointment.objects.create(
-            patient = request.user.patient,
-            doctor=Doctor.objects.get(user_id=id),
-            medical_service = request.POST["medical_service"],
-            date = request.POST["date"]
-        )
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            form.save()
         return HttpResponseRedirect(reverse('personal'))
-    
+    else:
+        doctor = Doctor.objects.get(user_id=id)
+        patient = Patient.objects.get(user_id=request.user)
+        form = AppointmentForm({'patient' : patient, 'doctor' : doctor})
+
     return render(request, 'users/appointment.html', {
-        'doctor' :  Doctor.objects.get(user_id=id),
+        'form' :  form,
     })
 
 #treatment
