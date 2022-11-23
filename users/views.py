@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 
 from .models import Patient, Doctor, Chatrooms, Messages
-from .models import Appointment, Treatment, Specialization
+from .models import Appointment, Treatment, Specialization, Schedule
 from .forms import AppointmentForm
 
 # Create your views here.
@@ -17,6 +17,17 @@ def is_patient(user):
 
 def is_doctor(user):
     return user.groups.filter(name='Doctor').exists()
+ 
+ 
+ #to work with schedule and available slots
+def string_to_schedule(s): # s - string
+    sched = {'Available' : [], 'Working' : []}
+    for i in range(len(s)):
+        if s[i] == '0':
+            sched['Available'].append(i+9)
+        elif s[i]=='1':
+            sched['Working'].append(i+9)
+    return sched
     
 
 def index(request):
@@ -83,7 +94,7 @@ def logout_view(request):
     return HttpResponseRedirect(reverse('index'))
 
 
-#search for appointment
+#search for appointment (search bar to search by doctor name or specialization name)
 def search_appointment(request):
     #search bar
     if 'search' in request.GET:
@@ -101,14 +112,19 @@ def search_appointment(request):
     })
 
 
-#website with doctor with giiven specialization
+#website with doctor with given specialization or name
 def search(request, object, name):
     if object == 'spec':
         id = int(name)
         spec = Specialization.objects.get(id=id)
         doctors = Doctor.objects.filter(spec = spec)    
     elif object == 'doctor':
-        doctors = Doctor.objects.filter(name = name)    
+        # doctors = Doctor.objects.filter(name = name) 
+        doctors = Schedule.objects.values('doctor__name', 'doctor__surname', 'doctor__photo', 'hours', 'day', 'doctor__user_id')
+        
+        for d in doctors:
+            d['available'] = string_to_schedule(d['hours'])['Available']        
+
     return render(request, 'users/search.html', {
         'doctors' :  doctors, 
     })

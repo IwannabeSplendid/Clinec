@@ -11,11 +11,11 @@
 <h3>Search for appointment</h3>
 
 <p>Results for the search</p>
-{% for doctor in doctors%}
+{% for d in doctors%}
 
-<p> <a href={% url 'appointment' id=doctor.user_id %}>{{doctor.name}} {{doctor.surname}}</a></p>
-<p> <img src="{{ doctor.photo.url }}" width="80" height="80"> </img></p>
-<p> {{ doctor.working_schedule }} </p>
+<p> <a href={% url 'appointment' id=d.doctor__user_id %}>{{d.doctor__name}} {{d.doctor__surname}}</a></p>
+<p> <img src="{{ d.doctor__photo.url }}" width="80" height="80"> </img></p>
+<p> {{ d.available }} </p>
 <p> </p>
 {% endfor%}
 

@@ -15,6 +15,7 @@ class User(AbstractUser):
 class Specialization(models.Model):
     name = models.CharField(max_length=50)
 
+
 #extended models of users
 
 class Doctor(models.Model):
@@ -32,7 +33,7 @@ class Doctor(models.Model):
     photo = models.ImageField(upload_to='images', blank=True)
     category=models.CharField(max_length=10, blank=True)
     appointment_price = models.CharField(max_length = 7, blank=True)
-    working_schedule = models.CharField(max_length = 50, blank=True)
+    # working_schedule = models.ForeignKey(Schedule, default = Schedule()) # -- schedule has a doctor field -> one to many rel
     education = models.CharField(max_length=30, blank=True)
     rating = models.CharField(max_length = 2, blank=True)
     address = models.CharField(max_length = 30, blank=True)
@@ -63,6 +64,24 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.surname}"
+
+#schedule
+Day_choices = (
+    ('Mon', "Monday"),
+    ('Tue', "Tuesday"),
+    ('Wed', "Wednesday"),
+    ('Thu', "Thursday"),
+    ('Fri', "Friday"),
+)
+
+class Schedule(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    day = models.CharField(max_length=3, choices=Day_choices) # Mon, Tu
+    hours = models.CharField(max_length=9) # 000000010 - represents that from 9 to 6 all slots are available except 16:00-17:00
+    
+    def __str__(self):
+        return f"Doctor: {self.doctor.name}; working on {self.day}"
+
 
 #appointments
 class Appointment(models.Model):

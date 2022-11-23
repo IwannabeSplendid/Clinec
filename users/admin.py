@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, Patient, Doctor, Appointment, Treatment, Chatrooms, Messages
+from .models import User, Patient, Doctor, Appointment, Treatment, Chatrooms, Messages, Schedule
 
 # Register your models here.
 #to manipulate models using admin
@@ -13,3 +13,4 @@ admin.site.register(Appointment)
 admin.site.register(Treatment)
 admin.site.register(Chatrooms)
 admin.site.register(Messages)
+admin.site.register(Schedule)
