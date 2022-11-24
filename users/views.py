@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
+import datetime
+
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
@@ -117,14 +119,28 @@ def search(request, object, name):
     if object == 'spec':
         id = int(name)
         spec = Specialization.objects.get(id=id)
-        doctors = Doctor.objects.filter(spec = spec)    
+        doctors_name = Doctor.objects.filter(spec = spec)   
     elif object == 'doctor':
-        # doctors = Doctor.objects.filter(name = name) 
-        doctors = Schedule.objects.values('doctor__name', 'doctor__surname', 'doctor__photo', 'hours', 'day', 'doctor__user_id')
+        doctors_name = Doctor.objects.filter(name = name) 
         
-        for d in doctors:
-            d['available'] = string_to_schedule(d['hours'])['Available']        
-
+    doctors = Schedule.objects.filter(doctor__in=doctors_name).values('doctor__name', 'doctor__surname', 
+                                        'doctor__photo', 'mon_hours', 'tue_hours', 'wed_hours', 'thu_hours',
+                                        'fri_hours','doctor__user_id', 'week')
+    
+    for d in doctors:
+        d['available_mon'] = string_to_schedule(d['mon_hours'])['Available']
+        d['available_tue'] = string_to_schedule(d['tue_hours'])['Available'] 
+        d['available_wed'] = string_to_schedule(d['wed_hours'])['Available'] 
+        d['available_thu'] = string_to_schedule(d['thu_hours'])['Available'] 
+        d['available_fri'] = string_to_schedule(d['fri_hours'])['Available']
+        d['doctor__user_id'] = str(d['doctor__user_id'])
+        d['mon_day'] = d['week']  
+        d['tue_day'] = d['week'] + datetime.timedelta(days=1)
+        d['wed_day'] = d['week'] + datetime.timedelta(days=2)
+        d['thu_day'] = d['week'] + datetime.timedelta(days=3)
+        d['fri_day'] = d['week'] + datetime.timedelta(days=4)
+          
+    
     return render(request, 'users/search.html', {
         'doctors' :  doctors, 
     })

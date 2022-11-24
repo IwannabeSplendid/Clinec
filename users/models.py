@@ -66,21 +66,26 @@ class Patient(models.Model):
         return f"{self.name} {self.surname}"
 
 #schedule
-Day_choices = (
-    ('Mon', "Monday"),
-    ('Tue', "Tuesday"),
-    ('Wed', "Wednesday"),
-    ('Thu', "Thursday"),
-    ('Fri', "Friday"),
-)
+# Day_choices = (
+#     ('Mon', "Monday"),
+#     ('Tue', "Tuesday"),
+#     ('Wed', "Wednesday"),
+#     ('Thu', "Thursday"),
+#     ('Fri', "Friday"),
+# )
 
 class Schedule(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    day = models.CharField(max_length=3, choices=Day_choices) # Mon, Tu
-    hours = models.CharField(max_length=9) # 000000010 - represents that from 9 to 6 all slots are available except 16:00-17:00
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, unique=True)
+    # day = models.CharField(max_length=3, choices=Day_choices) # Mon, Tu
+    mon_hours = models.CharField(max_length=9, default='000000000') # 000000010 - represents that from 9 to 6 all slots are available except 16:00-17:00 on monday
+    tue_hours = models.CharField(max_length=9, default='000000000')
+    wed_hours = models.CharField(max_length=9, default='000000000')
+    thu_hours = models.CharField(max_length=9, default='000000000')
+    fri_hours = models.CharField(max_length=9, default='000000000')
+    week = models.DateField(default='2022-11-28') # the day of the monday:
     
     def __str__(self):
-        return f"Doctor: {self.doctor.name}; working on {self.day}"
+        return f"The schedule of {self.doctor.name}"
 
 
 #appointments
@@ -88,7 +93,7 @@ class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='appointments')
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='appointments')
     medical_service = models.CharField(max_length = 50)
-    date = models.DateField()
+    date = models.DateTimeField()
 
     def __str__(self):
         return f"Patient: {self.patient.name}; Doctor: {self.doctor.surname}; date: {self.date}"
