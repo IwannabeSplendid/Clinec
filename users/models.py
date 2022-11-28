@@ -77,7 +77,7 @@ class Patient(models.Model):
 class Schedule(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, unique=True)
     # day = models.CharField(max_length=3, choices=Day_choices) # Mon, Tu
-    mon_hours = models.CharField(max_length=9, default='000000000') # 000000010 - represents that from 9 to 6 all slots are available except 16:00-17:00 on monday
+    mon_hours = models.CharField(max_length=9, default='000000000') # 000000010 - represents that from 9 to 18:00 all slots are available except 16:00-17:00 on monday
     tue_hours = models.CharField(max_length=9, default='000000000')
     wed_hours = models.CharField(max_length=9, default='000000000')
     thu_hours = models.CharField(max_length=9, default='000000000')

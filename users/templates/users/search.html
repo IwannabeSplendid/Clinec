@@ -12,17 +12,18 @@
 
 <p>Results for the search</p>
 {% for d in doctors%}
-
-<p> <a href={% url 'appointment' id=d.doctor__user_id %}>{{d.doctor__name}} {{d.doctor__surname}}</a></p>
+<p> <a href={% url 'appointment' id=d.doctor__user_id h=0 day='0' %}>{{d.doctor__name}} {{d.doctor__surname}}</a></p>
 <p> <img src="{{ d.doctor__photo.url }}" width="80" height="80"> </img></p>
-<p> Schedule on {{mon_day}}:</p>
-{% for h in d.available_mon %}
-<p>Available at {{h}}:00</p>
-{% endfor %}
-<p> Schedule on {{tue_day}} {{ d.available_tue }} </p>
-<p> Schedule on {{wed_day}} {{ d.available_wed }} </p>
-<p> Schedule on {{thu_day}} {{ d.available_thu }} </p>
-<p> Schedule on {{fri_day}} {{ d.available_fri }} </p>
+<p> Available slots on {{d.mon_day}}:</p>
+<p>
+    {% for h in d.available_mon %}
+     <a href={% url 'appointment' id=d.doctor__user_id h=h day=d.mon_day%}>{{h}}:00</a>
+    {% endfor %} 
+</p>
+<p> Schedule on {{d.tue_day}} {{ d.available_tue }} </p>
+<p> Schedule on {{d.wed_day}} {{ d.available_wed }} </p>
+<p> Schedule on {{d.thu_day}} {{ d.available_thu }} </p>
+<p> Schedule on {{d.fri_day}} {{ d.available_fri }} </p>
 <p> </p>
 {% endfor%}
 

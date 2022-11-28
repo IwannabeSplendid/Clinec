@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-import datetime
+from datetime import datetime, timedelta
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -134,29 +134,54 @@ def search(request, object, name):
         d['available_thu'] = string_to_schedule(d['thu_hours'])['Available'] 
         d['available_fri'] = string_to_schedule(d['fri_hours'])['Available']
         d['doctor__user_id'] = str(d['doctor__user_id'])
-        d['mon_day'] = d['week']  
-        d['tue_day'] = d['week'] + datetime.timedelta(days=1)
-        d['wed_day'] = d['week'] + datetime.timedelta(days=2)
-        d['thu_day'] = d['week'] + datetime.timedelta(days=3)
-        d['fri_day'] = d['week'] + datetime.timedelta(days=4)
-          
-    
+        d['mon_day'] = d['week'] 
+        d['tue_day'] = d['week'] + timedelta(days=1)
+        d['wed_day'] = d['week'] + timedelta(days=2)
+        d['thu_day'] = d['week'] + timedelta(days=3)
+        d['fri_day'] = d['week'] + timedelta(days=4)
+
     return render(request, 'users/search.html', {
         'doctors' :  doctors, 
     })
     
 #appointment
 @login_required
-def appointment(request, id):
+def appointment(request, id, h, day):
     if request.method == 'POST':
         form = AppointmentForm(request.POST)
         if form.is_valid():
             form.save()
+        
+        #update schedule so that the time will not be available
+        date = form['date'].value()
+        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+        h = date.time().hour
+        doctor = Doctor.objects.get(user_id=form['doctor'].value())
+        schedule = Schedule.objects.filter(doctor=doctor)[0]
+        if date.weekday()==0:
+            s = schedule.mon_hours
+            schedule.mon_hours=s[:h-9]+'1'+s[h-8:]
+        elif date.weekday()==1:
+            s = schedule.tue_hours
+            schedule.tue_hours=s[:h-9]+'1'+s[h-8:]
+        elif date.weekday()==2:
+            s = schedule.wed_hours
+            schedule.wed_hours=s[:h-9]+'1'+s[h-8:]
+        elif date.weekday()==3:
+            s = schedule.thu_hours
+            schedule.thu_hours=s[:h-9]+'1'+s[h-8:]
+        elif date.weekday()==4:
+            s = schedule.fri_hours
+            schedule.fru_hours=s[:h-9]+'1'+s[h-8:]
+        print(schedule.mon_hours)
+        schedule.save()
+        
         return HttpResponseRedirect(reverse('personal'))
     else:
         doctor = Doctor.objects.get(user_id=id)
         patient = Patient.objects.get(user_id=request.user)
-        form = AppointmentForm({'patient' : patient, 'doctor' : doctor})
+        date = datetime.strptime(day, '%Y-%m-%d') + timedelta(hours=h)
+        form = AppointmentForm({'patient' : patient, 'doctor' : doctor, 'date' : date})      
 
     return render(request, 'users/appointment.html', {
         'form' :  form,
