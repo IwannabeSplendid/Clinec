@@ -20,10 +20,30 @@
      <a href={% url 'appointment' id=d.doctor__user_id h=h day=d.mon_day%}>{{h}}:00</a>
     {% endfor %} 
 </p>
-<p> Schedule on {{d.tue_day}} {{ d.available_tue }} </p>
-<p> Schedule on {{d.wed_day}} {{ d.available_wed }} </p>
-<p> Schedule on {{d.thu_day}} {{ d.available_thu }} </p>
-<p> Schedule on {{d.fri_day}} {{ d.available_fri }} </p>
+<p> Available slots on {{d.tue_day}}:</p>
+<p>
+    {% for h in d.available_tue %}
+     <a href={% url 'appointment' id=d.doctor__user_id h=h day=d.tue_day%}>{{h}}:00</a>
+    {% endfor %} 
+</p>
+<p> Available slots on {{d.wed_day}}:</p>
+<p>
+    {% for h in d.available_wed %}
+     <a href={% url 'appointment' id=d.doctor__user_id h=h day=d.wed_day%}>{{h}}:00</a>
+    {% endfor %} 
+</p>
+<p> Available slots on {{d.thu_day}}:</p>
+<p>
+    {% for h in d.available_thu %}
+     <a href={% url 'appointment' id=d.doctor__user_id h=h day=d.thu_day%}>{{h}}:00</a>
+    {% endfor %} 
+</p>
+<p> Available slots on {{d.fri_day}}:</p>
+<p>
+    {% for h in d.available_fri %}
+     <a href={% url 'appointment' id=d.doctor__user_id h=h day=d.fri_day%}>{{h}}:00</a>
+    {% endfor %} 
+</p>
 <p> </p>
 {% endfor%}
 

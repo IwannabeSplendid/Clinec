@@ -1,0 +1,94 @@
+{% extends 'users/layout.html' %}
+{% block head %}
+
+    <title>{{Admin}}</title>
+
+    <style>
+        .assigned_patients{
+            padding-left: 5%;
+            display: flex;
+            gap:20px;
+        }
+
+        .assigned_patients > *{
+            flex-flow: column;
+        }
+
+        #treatment-popup{
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            background-color: darkcyan;
+            border-radius: 10px;
+            visibility: hidden;
+        }
+        
+        #treatment-history{
+            visibility: hidden;
+            position:fixed;
+            top:20%;
+            left:20%;
+            width:40%;
+            background-color: darkorchid;
+            border-radius: 12px;
+        }
+
+        #chat-button{
+            position: fixed;
+            bottom: 5%;
+            right: 5%;            
+
+        }
+
+        #chats{
+            position: fixed;
+            bottom: 8%;
+            right: 5%;
+            border: 1px solid black;
+            border-radius: 5%;
+            background-color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+
+            visibility: hidden;
+        }
+
+        .chatroom-div{
+            border: 1px solid black;
+            position: fixed;
+            bottom: 8%;
+            right: 5%;
+
+            visibility: hidden;
+        }
+    </style>
+{% endblock %}
+
+
+{%block body%}
+
+    <div style="border: 1px solid pink">
+        <h3>admin page</h3>
+
+        <p>Welcome, {{request.user.username}} </p>
+
+        <p><a href="{% url 'register' %}">Register</a></p>
+
+  
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

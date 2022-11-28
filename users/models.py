@@ -33,7 +33,6 @@ class Doctor(models.Model):
     photo = models.ImageField(upload_to='images', blank=True)
     category=models.CharField(max_length=10, blank=True)
     appointment_price = models.CharField(max_length = 7, blank=True)
-    # working_schedule = models.ForeignKey(Schedule, default = Schedule()) # -- schedule has a doctor field -> one to many rel
     education = models.CharField(max_length=30, blank=True)
     rating = models.CharField(max_length = 2, blank=True)
     address = models.CharField(max_length = 30, blank=True)
@@ -45,7 +44,7 @@ class Doctor(models.Model):
 
 #patient
 class Patient(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     date_of_birth = models.DateField(blank=True)
     IIN = models.CharField(max_length=12, blank=True)
     gov_id = models.CharField(max_length=12,blank=True)

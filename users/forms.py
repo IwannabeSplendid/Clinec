@@ -1,6 +1,7 @@
 from django import forms
-from .models import Appointment
- 
+from .models import Appointment, Doctor, Patient, User
+from django.contrib.auth.forms import UserCreationForm
+
  
 class AppointmentForm(forms.ModelForm):
     class Meta:
@@ -10,3 +11,28 @@ class AppointmentForm(forms.ModelForm):
         labels = {
     
         }
+
+class UserForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields[fieldname].help_text = None
+    
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2"]
+
+
+class PatientForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = ["date_of_birth", "gov_id", "name", "surname", "middle_name", "blood_group", "contact_close", 
+                  "phone_number", "address", "marital_status", "registration_date", "assigned_doctor"] 
+
+class DoctorForm(forms.ModelForm):
+    class Meta:
+        model = Doctor
+        fields = ["date_of_birth", "IIN", "gov_id", "name", "surname", "middle_name", "department_ID", "spec", 
+                  "phone_number", "experience", "photo", "address", "category", "appointment_price", 
+                  "education", "rating", "address"] 

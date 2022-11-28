@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 from datetime import datetime, timedelta
 
@@ -7,9 +8,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 
-from .models import Patient, Doctor, Chatrooms, Messages
+from .models import Patient, Doctor, Chatrooms, Messages, User
 from .models import Appointment, Treatment, Specialization, Schedule
-from .forms import AppointmentForm
+from .forms import AppointmentForm, UserForm, PatientForm, DoctorForm
 
 # Create your views here.
 
@@ -19,7 +20,9 @@ def is_patient(user):
 
 def is_doctor(user):
     return user.groups.filter(name='Doctor').exists()
- 
+
+def is_admin(user):
+    return user.is_staff
  
  #to work with schedule and available slots
 def string_to_schedule(s): # s - string
@@ -88,6 +91,9 @@ def personal(request):
 
     elif is_doctor(user):
         return render(request, 'users/doctor_page.html')
+    
+    elif is_admin(user):
+        return render(request, 'users/admin_page.html')
 
     return HttpResponseRedirect(reverse('admin:index'))
 
@@ -242,3 +248,72 @@ def updateMessages(request, chatroom_id):
         'messages' : list(messages.values())
     })
 
+# admin register user 
+@staff_member_required
+def register_view(request):
+    form = UserForm()  
+    
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            
+        user = User.objects.filter(email = form['email'].value())[0]
+        
+        #create user admin
+        if request.POST['role']=='Admin':
+            user.is_staff = True
+            user.is_superuser= True
+            user.save()
+        elif request.POST['role']=='Patient':
+            return redirect('register_patient', id = user.id) 
+        elif request.POST['role']=='Doctor':   
+            return redirect('register_doctor', id = user.id) 
+        
+        return HttpResponseRedirect(reverse('personal'))
+            
+    return render(request, 'users/register.html', {
+        'form' :  form
+    })
+
+# admin register patient 
+@staff_member_required
+def register_p(request, id):
+    user = User.objects.get(id=id)
+    
+    form = PatientForm({'user' : user})  
+    
+    if request.method == 'POST':
+        form = PatientForm(request.POST)
+        if form.is_valid():
+            form.save()
+                    
+        return HttpResponseRedirect(reverse('personal'))
+        
+    return render(request, 'users/register_p.html', {
+        'form' :  form
+    })
+    
+
+# admin register patient 
+@staff_member_required
+def register_d(request, id):
+    user = User.objects.get(id=id)
+    
+    print(user)
+    form = DoctorForm({'user' : user})  
+    
+    if request.method == 'POST':
+        form = DoctorForm(request.POST, {'user' : user})
+        if form.is_valid():
+            form.save()
+        
+        doctor = Doctor.objects.get(user_id=id)
+        schedule = Schedule(doctor = doctor)
+        schedule.save()
+                    
+        return HttpResponseRedirect(reverse('personal'))
+        
+    return render(request, 'users/register_d.html', {
+        'form' :  form
+    })

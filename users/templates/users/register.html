@@ -1,0 +1,26 @@
+{% extends 'users/layout.html' %}
+
+{% block head %}
+
+<title>Create user</title>
+
+{% endblock %}
+
+{%block body%}
+
+<h3>Registeration form</h3>
+
+<form method="post">
+    {% csrf_token%}
+    {{ form.as_p }}
+    <p>Role <select name="role" required>
+        <option>Doctor</option>
+        <option>Patient</option>
+        <option>Admin</option>
+    </select></p>
+    <p><input type="submit" value="Register"></p> 
+</form>
+
+<p></p>
+<p><a href="{% url 'personal' %}">Admin page</a></p>
+{% endblock %}
