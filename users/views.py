@@ -93,7 +93,12 @@ def personal(request):
         return render(request, 'users/doctor_page.html')
     
     elif is_admin(user):
-        return render(request, 'users/admin_page.html')
+        patients = Patient.objects.all()
+        doctors = Doctor.objects.all()
+        
+        return render(request, 'users/admin_page.html', {
+            'patients' : patients, 'doctors' : doctors
+        })
 
     return HttpResponseRedirect(reverse('admin:index'))
 
@@ -278,13 +283,14 @@ def register_view(request):
 
 # admin register patient 
 @staff_member_required
-def register_p(request, id):
-    user = User.objects.get(id=id)
-    
-    form = PatientForm({'user' : user})  
+def register_p(request, id):  
+    form = PatientForm({"registration_date": datetime.today().date()})  
     
     if request.method == 'POST':
-        form = PatientForm(request.POST)
+        data = request.POST.copy()
+        data['user'] = str(id)
+        form = PatientForm(data)
+        
         if form.is_valid():
             form.save()
                     
@@ -298,13 +304,12 @@ def register_p(request, id):
 # admin register patient 
 @staff_member_required
 def register_d(request, id):
-    user = User.objects.get(id=id)
-    
-    print(user)
-    form = DoctorForm({'user' : user})  
+    form = DoctorForm({"registration_date": datetime.today()})  
     
     if request.method == 'POST':
-        form = DoctorForm(request.POST, {'user' : user})
+        data = request.POST.copy()
+        data['user'] = str(id)
+        form = DoctorForm(data)
         if form.is_valid():
             form.save()
         
@@ -316,4 +321,39 @@ def register_d(request, id):
         
     return render(request, 'users/register_d.html', {
         'form' :  form
+    })
+
+
+#update
+@staff_member_required    
+def update(request, role, id):
+    if role == 'Patient':
+        patient = Patient.objects.get(user_id = str(id))
+        form = PatientForm(instance=patient) 
+        
+        if request.method == 'POST':
+            if 'Delete' in request.POST:
+                patient.delete()
+            else:
+                form = PatientForm(request.POST, instance=patient)
+                if form.is_valid():
+                    form.save()
+            return HttpResponseRedirect(reverse('personal'))
+        
+    elif role == 'Doctor':
+        doctor = Doctor.objects.get(user_id = str(id))
+        form = DoctorForm(instance=doctor)
+          
+        if request.method == 'POST':
+            if 'Delete' in request.POST:
+                doctor.delete()
+            else:
+                form = DoctorForm(request.POST, instance=doctor)
+                if form.is_valid():
+                    form.save()
+            return HttpResponseRedirect(reverse('personal'))
+    
+        
+    return render(request, 'users/update.html', {
+        'form' :  form, 'role' : role
     })

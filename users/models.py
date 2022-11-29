@@ -14,27 +14,29 @@ class User(AbstractUser):
 #specialization
 class Specialization(models.Model):
     name = models.CharField(max_length=50)
-
+    
+    def __str__(self):
+        return self.name
 
 #extended models of users
 
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     date_of_birth = models.DateField(blank=True)
-    IIN = models.CharField(max_length=12, blank=True)
-    gov_id = models.CharField(max_length=12,blank=True)
+    IIN = models.IntegerField(max_length=12, blank=True)
+    gov_id = models.IntegerField(max_length=12,blank=True)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50, blank=True)
     middle_name = models.CharField(max_length=50, blank=True)
     phone_number = models.CharField(max_length=11,blank=True)
-    department_ID = models.CharField(max_length=6, blank=True)
+    department_ID = models.IntegerField(max_length=6, blank=True)
     spec = models.ForeignKey(Specialization, on_delete = models.SET_NULL, blank = True, null = True)
     experience = models.CharField(max_length=2, blank=True)
     photo = models.ImageField(upload_to='images', blank=True)
     category=models.CharField(max_length=10, blank=True)
     appointment_price = models.CharField(max_length = 7, blank=True)
     education = models.CharField(max_length=30, blank=True)
-    rating = models.CharField(max_length = 2, blank=True)
+    rating = models.IntegerField(max_length = 2, blank=True)
     address = models.CharField(max_length = 30, blank=True)
     homepage = models.URLField(blank=True)
 
@@ -43,22 +45,34 @@ class Doctor(models.Model):
 
 
 #patient
+blood_group_choices = [
+    ("A", "A"),
+    ("B", "B"),
+    ("AB", "AB"),
+    ("O", "O")
+]
+
+marital_status_choices =[
+    ("married", "Married"),
+    ("separeted", "Separeted"),
+    ("single", "Single"),
+    ("widowed", "Widowed")
+]
+
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     date_of_birth = models.DateField(blank=True)
-    IIN = models.CharField(max_length=12, blank=True)
-    gov_id = models.CharField(max_length=12,blank=True)
+    IIN = models.IntegerField(max_length=12, blank=True)
+    gov_id = models.IntegerField(max_length=12,blank=True)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50, blank=True)
     middle_name = models.CharField(max_length=50, blank=True)
-    blood_group = models.CharField(max_length=2, blank=True)
+    blood_group = models.CharField(max_length=2, blank=True, choices=blood_group_choices)
     contact_close = models.CharField(max_length=11,blank=True)
     phone_number = models.CharField(max_length=11,blank=True)
     address = models.CharField(max_length=50, blank=True)
-    marital_status = models.CharField(max_length=10, blank=True)
-    registration_date = models.DateField()
-    email = models.EmailField(blank=True)
-
+    marital_status = models.CharField(max_length=10, blank=True, choices = marital_status_choices)
+    registration_date = models.DateField(default = datetime.today())
     assigned_doctor = models.ForeignKey(Doctor, related_name='assigned_patients', on_delete=models.PROTECT, default = Doctor.objects.get(surname="House").pk) #why added pk?
 
     def __str__(self):

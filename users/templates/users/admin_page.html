@@ -75,7 +75,16 @@
 
         <p>Welcome, {{request.user.username}} </p>
 
-        <p><a href="{% url 'register' %}">Register</a></p>
+        <p><a href="{% url 'register' %}">Register new user</a></p>
+        <p>Update patients </p>
+        {% for patient in patients%}
+        <p><a href="{% url 'update' role='Patient' id=patient.user_id %}">{{ patient.name}} {{ patient.surname}}</a></p>
+        {% endfor %}
+
+        <p>Update doctors </p>
+        {% for doctor in doctors%}
+        <p><a href="{% url 'update' role='Doctor' id=doctor.user_id  %}">{{ doctor.name}} {{ doctor.surname}}</a></p>
+        {% endfor %}
 
   
 
