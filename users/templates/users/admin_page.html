@@ -86,7 +86,8 @@
         <p><a href="{% url 'update' role='Doctor' id=doctor.user_id  %}">{{ doctor.name}} {{ doctor.surname}}</a></p>
         {% endfor %}
 
-  
+        <p></p>
+        <p><a href="{% url 'logout' %}">log out</a></p>
 
 {% endblock %}
 

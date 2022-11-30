@@ -11,7 +11,8 @@
 <h3>Search for appointment</h3>
 
 <p>Results for the search</p>
-{% for d in doctors%}
+
+{% for d in page_obj%}
 <p> <a href={% url 'appointment' id=d.doctor__user_id h=0 day='0' %}>{{d.doctor__name}} {{d.doctor__surname}}</a></p>
 <p> <img src="{{ d.doctor__photo.url }}" width="80" height="80"> </img></p>
 <p> Available slots on {{d.mon_day}}:</p>
@@ -46,6 +47,24 @@
 </p>
 <p> </p>
 {% endfor%}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 
 {% endblock %}

@@ -12,6 +12,8 @@ from .models import Patient, Doctor, Chatrooms, Messages, User
 from .models import Appointment, Treatment, Specialization, Schedule
 from .forms import AppointmentForm, UserForm, PatientForm, DoctorForm
 
+from django.core.paginator import Paginator
+
 # Create your views here.
 
 #to check group of user
@@ -120,9 +122,10 @@ def search_appointment(request):
             id = Specialization.objects.filter(name=keyword).values_list('id',flat=True)[0]
             return redirect('search', object = 'spec', name = str(id))
 
-    return render(request, 'users/appointment_search.html', {
-        'specs' :  Specialization.objects.all()
-    })
+    paginator = Paginator(Specialization.objects.all(), 2) # PAGINATION, 2 -- number of objects per page (you can change it)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'users/appointment_search.html', {'page_obj': page_obj})
 
 
 #website with doctor with given specialization or name
@@ -151,9 +154,13 @@ def search(request, object, name):
         d['thu_day'] = d['week'] + timedelta(days=3)
         d['fri_day'] = d['week'] + timedelta(days=4)
 
-    return render(request, 'users/search.html', {
-        'doctors' :  doctors, 
-    })
+    # return render(request, 'users/search.html', {
+    #     'doctors' :  doctors, 
+    # })
+    paginator = Paginator(doctors, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'users/search.html', {'page_obj': page_obj})
     
 #appointment
 @login_required
