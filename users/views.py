@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 
@@ -18,10 +19,18 @@ from django.core.paginator import Paginator
 
 #to check group of user
 def is_patient(user):
-    return user.groups.filter(name='Patient').exists()
+    try:
+        if user.patient:
+            return True
+    except:
+        return False
 
 def is_doctor(user):
-    return user.groups.filter(name='Doctor').exists()
+    try:
+        if user.doctor:
+            return True
+    except:
+        return False
 
 def is_admin(user):
     return user.is_staff
@@ -244,7 +253,6 @@ def send(request, chatroom_id):
                 chatroom = Chatrooms.objects.get(id=chatroom_id),
                 username = str(user.doctor)
             )
-
         return HttpResponseRedirect(reverse('personal'))
 
 
@@ -263,13 +271,14 @@ def updateMessages(request, chatroom_id):
 # admin register user 
 @staff_member_required
 def register_view(request):
-    form = UserForm()  
+    form = UserForm()
     
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-            
+        else:
+            return render(request, 'users/register.html', {'form': form})    
         user = User.objects.filter(email = form['email'].value())[0]
         
         #create user admin
@@ -297,7 +306,6 @@ def register_p(request, id):
         data = request.POST.copy()
         data['user'] = str(id)
         form = PatientForm(data)
-        
         if form.is_valid():
             form.save()
                     
