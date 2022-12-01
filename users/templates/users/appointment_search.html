@@ -39,7 +39,7 @@
             <div class="w-full mx-2 sm:w-[100%] md:w-[80%]"><input list="tags" type="text" name="search" placeholder="Keywords" class="my-[0px] block px-4 py-2 text-gray-700 bg-white border rounded-global w-full focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:focus:border-blue-300 sm:w-[100%]" />
             <datalist id="tags">
               {% for d in doctors %}
-                <option value="{{d.name}} {{d.surname}}"></option>
+                <option value="{{d.name}}"></option>
               {% endfor %}
               {% for spec in specs %}
                 <option value="{{spec.name}}"></option>
