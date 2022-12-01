@@ -131,10 +131,10 @@ def search_appointment(request):
             id = Specialization.objects.filter(name=keyword).values_list('id',flat=True)[0]
             return redirect('search', object = 'spec', name = str(id))
 
-    paginator = Paginator(Specialization.objects.all(), 2) # PAGINATION, 2 -- number of objects per page (you can change it)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'users/appointment_search.html', {'page_obj': page_obj})
+    return render(request, 'users/appointment_search.html', {
+        'specs' :  Specialization.objects.all(),
+        'doctors' : Doctor.objects.all()
+    })
 
 
 #website with doctor with given specialization or name
