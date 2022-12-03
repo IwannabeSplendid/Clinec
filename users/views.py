@@ -147,8 +147,8 @@ def search(request, object, name):
         doctors_name = Doctor.objects.filter(name = name) 
         
     doctors = Schedule.objects.filter(doctor__in=doctors_name).values('doctor__name', 'doctor__surname', 
-                                        'doctor__photo', 'mon_hours', 'tue_hours', 'wed_hours', 'thu_hours',
-                                        'fri_hours','doctor__user_id', 'week')
+                                     'doctor__photo', 'mon_hours', 'tue_hours', 'wed_hours', 'thu_hours',
+                                      'fri_hours','doctor__user_id', 'week')
     
     for d in doctors:
         d['available_mon'] = string_to_schedule(d['mon_hours'])['Available']
@@ -162,6 +162,7 @@ def search(request, object, name):
         d['wed_day'] = d['week'] + timedelta(days=2)
         d['thu_day'] = d['week'] + timedelta(days=3)
         d['fri_day'] = d['week'] + timedelta(days=4)
+        d['photo']=Doctor.objects.get(user_id= d['doctor__user_id']).photo
 
     # return render(request, 'users/search.html', {
     #     'doctors' :  doctors, 
@@ -209,7 +210,7 @@ def appointment(request, id, h, day):
         patient = Patient.objects.get(user_id=request.user)
         date = datetime.strptime(day, '%Y-%m-%d') + timedelta(hours=h)
         form = AppointmentForm({'patient' : patient, 'doctor' : doctor, 'date' : date})      
-
+    
     return render(request, 'users/appointment.html', {
         'form' :  form,
     })

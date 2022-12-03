@@ -129,4 +129,4 @@ AUTH_USER_MODEL = 'users.User'
 MEDIA_URL = '/media/'
 
 #to save media in the media file
-MEDIA_ROOT =  os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
