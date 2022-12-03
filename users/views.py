@@ -208,8 +208,11 @@ def appointment(request, id, h, day):
     else:
         doctor = Doctor.objects.get(user_id=id)
         patient = Patient.objects.get(user_id=request.user)
-        date = datetime.strptime(day, '%Y-%m-%d') + timedelta(hours=h)
-        form = AppointmentForm({'patient' : patient, 'doctor' : doctor, 'date' : date})      
+        if day == '0':
+            form = AppointmentForm({'patient' : patient, 'doctor' : doctor})   
+        else:
+            date = datetime.strptime(day, '%Y-%m-%d') + timedelta(hours=h)
+            form = AppointmentForm({'patient' : patient, 'doctor' : doctor, 'date' : date})      
     
     return render(request, 'users/appointment.html', {
         'form' :  form,
