@@ -10,7 +10,7 @@
 
 <h3>Registeration form</h3>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token%}
     {{ form.as_p }}
     <p>Role <select name="role" required>

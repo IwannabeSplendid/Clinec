@@ -325,7 +325,7 @@ def register_d(request, id):
     if request.method == 'POST':
         data = request.POST.copy()
         data['user'] = str(id)
-        form = DoctorForm(data)
+        form = DoctorForm(data, request.FILES)
         if form.is_valid():
             form.save()
         
@@ -364,7 +364,7 @@ def update(request, role, id):
             if 'Delete' in request.POST:
                 doctor.delete()
             else:
-                form = DoctorForm(request.POST, instance=doctor)
+                form = DoctorForm(request.POST, request.FILES, instance=doctor)
                 if form.is_valid():
                     form.save()
             return HttpResponseRedirect(reverse('personal'))
