@@ -147,7 +147,7 @@ def search(request, object, name):
         doctors_name = Doctor.objects.filter(name = name) 
         
     doctors = Schedule.objects.filter(doctor__in=doctors_name).values('doctor__name', 'doctor__surname', 
-                                     'doctor__photo', 'mon_hours', 'tue_hours', 'wed_hours', 'thu_hours',
+                                     'mon_hours', 'tue_hours', 'wed_hours', 'thu_hours',
                                       'fri_hours','doctor__user_id', 'week')
     
     for d in doctors:
