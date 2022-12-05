@@ -88,8 +88,8 @@
                 <ul class="flex flex-col flex-wrap justify-start content-start items-start mx-[20px] text-[20px] list-disc list-inside">
                   <li class="mb-[5px] flex items-center gap-x-3"><strong>Name:</strong> {{request.user.patient.name}} {{request.user.patient.middle_name}} {{request.user.patient.surname}} </li>
                   <li class="mb-[5px] flex items-center gap-x-3"><strong>ID:</strong> {{request.user.patient.gov_id}}</li>
-                  <li class="mb-[5px] flex items-center gap-x-3"><strong>Phone:</strong>548546</li>
-                  <li class="mb-[5px] flex items-center gap-x-3"><strong>Email</strong> elinor.dashwood@sensibility.com</li>
+                  <li class="mb-[5px] flex items-center gap-x-3"><strong>Phone:</strong>{{request.user.patient.phone_number}}</li>
+                  <li class="mb-[5px] flex items-center gap-x-3"><strong>Email</strong> {{request.user.email}}</li>
                   <li class="flex items-center gap-x-3"><strong>Address:</strong> {{request.user.patient.address}}</li>
                 </ul>
                 </p><button id="xdAxix" class="float-right mx-[25px] mt-[12px] bg-primary text-white px-4 py-2 rounded-global xl:bg-teal-500" onclick="show_popup()">Edit information</button>
@@ -136,7 +136,7 @@
                   <li class="mb-[5px] flex items-center gap-x-3">Doctor: House</li>
                   <li class="mb-[5px] flex items-center gap-x-3">Date: 2022-10-21 00:00:00+00:00</li>-->
 
-                  <li class="mb-[5px] flex items-center gap-x-3">{{appointment}}</li>
+                  <li class="mb-[5px] flex items-center gap-x-3">{{appointment.doctor}}: {{appointment.date}}</li>
                   {% empty %}
                   <li class="mb-[5px] flex items-center gap-x-3"><i>There are no appointments yet</i></li>
                   {% endfor %}                    
@@ -230,7 +230,7 @@
             <p>Middle name <input type="text" name="middle_name" required {% if request.user.patient.middle_name%} value="{{request.user.patient.middle_name}}" {%endif%}></p>
             <p>Address <input type="text" name="address" required {% if request.user.patient.address%} value="{{request.user.patient.address}}" {%endif%}></p>
             <p>Phone number <input type="text" name="phone_number" required {% if request.user.patient.phone_number%} value="{{request.user.patient.phone_number}}" {%endif%}></p>
-            <p>Email <input type="email" name="email" required {% if request.user.patient.email%} value="{{request.user.patient.email}}" {%endif%}></p>
+            <p>Email <input type="email" name="email" required {% if request.user.email%} value="{{request.user.email}}" {%endif%}></p>
             <p>Contact of a close person <input type="text" name="contact_close" required {% if request.user.patient.contact_close%} value="{{request.user.patient.contact_close}}" {%endif%}></p>
 
             <p><input type="submit" value="Save"></p>

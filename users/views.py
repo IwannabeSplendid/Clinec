@@ -87,13 +87,14 @@ def personal(request):
 
         #if form submitted (patient info form)
         if request.method == "POST":
+            user.email = request.POST["email"]
+            user.save()
             user.patient.gov_id = request.POST["gov_id"]
             user.patient.name = request.POST["name"]
             user.patient.surname = request.POST["surname"]
             user.patient.middle_name = request.POST["middle_name"]
             user.patient.address = request.POST["address"]
             user.patient.phone_number = request.POST["phone_number"]
-            user.patient.email = request.POST["email"]
             user.patient.contact_close = request.POST["contact_close"]
             user.patient.save()
             return HttpResponseRedirect(reverse('personal'))
