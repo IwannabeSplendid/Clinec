@@ -12,11 +12,18 @@ from .models import Appointment, Treatment
 
 #to check group of user
 def is_patient(user):
-    return user.groups.filter(name='Patient').exists()
+    try:
+        if user.patient:
+            return True
+    except:
+        return False
 
 def is_doctor(user):
-    return user.groups.filter(name='Doctor').exists()
-    
+    try:
+        if user.doctor:
+            return True
+    except:
+        return False
 
 def index(request):
     if not request.user.is_authenticated:
