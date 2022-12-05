@@ -29,7 +29,6 @@ class Doctor(models.Model):
     surname = models.CharField(max_length=50, blank=True)
     middle_name = models.CharField(max_length=50, blank=True)
     phone_number = models.CharField(max_length=11,blank=True)
-    department_ID = models.IntegerField(max_length=6, blank=True)
     spec = models.ForeignKey(Specialization, on_delete = models.SET_NULL, blank = True, null = True)
     experience = models.CharField(max_length=2, blank=True)
     photo = models.ImageField(upload_to='images', blank=True)

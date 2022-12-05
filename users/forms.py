@@ -42,15 +42,20 @@ class PatientForm(forms.ModelForm):
 class DoctorForm(forms.ModelForm):
     class Meta:
         model = Doctor
-        fields = ["date_of_birth", "IIN", "gov_id", "name", "surname", "middle_name", "department_ID", "spec", 
+        fields = ["date_of_birth", "IIN", "gov_id", "name", "surname", "middle_name", "spec", 
                   "phone_number", "experience", "photo", "address", "category", "appointment_price", 
                   "education", "rating", "address", "user"] 
         widgets = {"user": forms.HiddenInput()} 
+        
+        labels = {
+            "spec" : "Department"
+        }
+        
 
     def __init__(self, *args, **kwargs):
         super(DoctorForm, self).__init__(*args, **kwargs)
 
-        for fieldname in ["date_of_birth", "IIN", "gov_id", "name", "surname", "middle_name", "department_ID", "spec", 
+        for fieldname in ["date_of_birth", "IIN", "gov_id", "name", "surname", "middle_name", "spec", 
                   "phone_number", "experience", "photo", "address", "category", "appointment_price", 
                   "education", "rating", "address", "user"] :
             self.fields[fieldname].help_text = None

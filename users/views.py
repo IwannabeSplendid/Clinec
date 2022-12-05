@@ -324,8 +324,8 @@ def register_p(request, id):
 # admin register patient 
 @staff_member_required
 def register_d(request, id):
-    form = DoctorForm({"registration_date": datetime.today()})  
-    
+    form = DoctorForm()  
+    print(form.fields)
     if request.method == 'POST':
         data = request.POST.copy()
         data['user'] = str(id)
@@ -353,7 +353,9 @@ def update(request, role, id):
         
         if request.method == 'POST':
             if 'Delete' in request.POST:
+                user = User.objects.get(id = id)
                 patient.delete()
+                user.delete()
             else:
                 form = PatientForm(request.POST, instance=patient)
                 if form.is_valid():
@@ -366,7 +368,9 @@ def update(request, role, id):
           
         if request.method == 'POST':
             if 'Delete' in request.POST:
+                user = User.objects.get(id = id)
                 doctor.delete()
+                user.delete()
             else:
                 form = DoctorForm(request.POST, request.FILES, instance=doctor)
                 if form.is_valid():
