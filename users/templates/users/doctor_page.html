@@ -4,6 +4,9 @@
     <title>{{request.user.username}}</title>
 
     <style>
+        
+
+
         .assigned_patients{
             padding-left: 5%;
             display: flex;
@@ -65,6 +68,8 @@
             visibility: hidden;
         }
     </style>
+
+    
 {% endblock %}
 
 
@@ -189,7 +194,7 @@
             <!-- to show messages, design as a real chat -->
             <form method="post" class="chat-form">
                 {%csrf_token%}
-                <input type="text" value="" name="message" class="message_text">  <!--classes, not id-s, because there are going to be a form per patient, and the values are accessed as the form's children that belong to those classes-->
+                <input type="text" value="" name="message" class="message_text" autocomplete="off">  <!--classes, not id-s, because there are going to be a form per patient, and the values are accessed as the form's children that belong to those classes-->
                 <input type="submit" value="send" id="submit_button">
 
                 <!-- hidden inputs to pass chatroom_id via js-ajax -->
@@ -228,6 +233,10 @@
 
         //function to show chatroom
         function chat_show(chatroom_id){
+
+            //close chat choosing view
+            document.getElementById('chats').style.visibility='hidden';
+
             //console.log(chatroom_id);
 
             //show the chatroom

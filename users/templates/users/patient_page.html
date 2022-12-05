@@ -57,7 +57,11 @@
             margin-bottom: 30px;
         }
       
-      
+        #logout_b{
+            position: absolute;
+            bottom: 5%;
+            left:3%;
+        }
       </style>
       <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
       <!-- import tailwind-->
@@ -65,46 +69,7 @@
     
     
     </head>
-   
 
-    <!--<style>
-        #popup-form{
-            visibility:hidden;
-            position: fixed;
-            top:20%;
-            left: 40%;
-            background-color: cadetblue;
-            border-radius: 6px;
-        }
-
-        #treatment-history{
-            visibility: hidden;
-            position: fixed;
-            top: 20%;
-            left: 20%;
-            width: 60%;
-            background-color: darkseagreen;
-            border-radius: 2%;
-            border: 1px solid black;
-        }
-
-        #chat_button{
-            position: fixed;
-            bottom: 5%;
-            right: 5%;            
-
-        }
-
-        #chat{
-            position: fixed;
-            bottom: 8%;
-            right: 5%;
-            border: 1px solid black;
-            border-radius: 5%;
-
-            visibility: hidden;
-        }
-    </style>-->
 
 {% endblock %}
 
@@ -250,7 +215,7 @@
         <form action="{% url 'search_appointment' %}"><input type="submit" value="Make an appointment"></form>
     </div>-->
 
-        <p><a href="{% url 'logout' %}">log out</a></p>
+        <p><button id="logout_b" class="float-left mx-[25px] mt-[12px] bg-primary text-white px-4 py-2 rounded-global xl:bg-teal-500" ><a href="{% url 'logout' %}">log out</a></button></p>
 
 
     <!-- popup to edit personal info -->
@@ -298,7 +263,7 @@
         <!-- form to send message -->
         <form method="post" id="chat-form">
             {%csrf_token%}
-            <input type="text" value="" name="message" id="message_text">
+            <input type="text" value="" name="message" id="message_text" autocomplete="off">
             <input type="submit" value="send" id="submit_button">
         </form>
     </div>
