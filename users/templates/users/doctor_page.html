@@ -26,7 +26,7 @@
             visibility: hidden;
         }
         
-        #treatment-history{
+        .treatment-history{
             visibility: hidden;
             position:fixed;
             top:20%;
@@ -84,8 +84,10 @@
 
         <!-- Patients and their treatments -->
         <!-- iterating through doctor's patients - patient model's objects :: accessing through user, through user the doctor model (extension model), through it the patients-->
+        
+        <strong>Patients</strong>
         {% for patient in request.user.doctor.assigned_patients.all %}
-            <strong>Patients</strong>
+            
             <div class="assigned_patients">
                 <div>{{patient}}</div>
                 <div>
@@ -99,17 +101,26 @@
                         {%endif%}
                     </div>
                     {%empty%}
-                        <i>There are no treatments yet</i>
+                        <p><i>There are no treatments yet</i></p>
                     {% endfor %}
+                
 
-                <p><button onclick="show_treatment_popup()">Add treatment</button></p>    
-                <p><button onclick="show_treatment_history()">View treatment history</button></p>
+                <!-- button to open popup to add treatment to this patient -->
+                <div >
+                    <p style="display: flex; flex-flow: row; gap: 5px;">
+                        <input type="hidden" value="{{patient}}" class="patient-repr">
+                        <input type="hidden" value="{{patient.gov_id}}" class="patient-id">
+                        <button onclick="show_treatment_popup($(this).parent().children('.patient-repr'), $(this).parent().children('.patient-id'))">Add treatment</button>
+                        <button onclick="show_treatment_history($(this).parent().children('.patient-id'))">View treatment history</button>
+                    </p>    
+
+                </div>
                 </div>
             </div>
 
 
             <!-- treatment history -->
-            <div id="treatment-history">
+            <div class="treatment-history" id="treatment-history-{{patient.gov_id}}">
                 Treatments
                 {% for treatment in patient.treatments.all|dictsortreversed:"date" %} <!-- sorting by date in reverse -->
                     <div style="border: 1px solid red">
@@ -121,15 +132,15 @@
                     <i>There are no treatments yet</i>
                 {% endfor %}
                 
-                <p><button onclick="close_treatment_history()">close</button></p>
+                <p><button onclick="close_treatment_history($(this).parent().parent())">close</button></p>
             </div>
 
             <!-- treatment popup :: has to be inside loop for patient info -->
             <div id="treatment-popup">
                 <form action="{%url 'treatment' %}" method="post">
                     {% csrf_token %}
-                    <p>Patient: <input type="text" name="patient" value="{{patient}}" readonly></p>
-                    <input type="text" name="gov_id" value="{{patient.gov_id}}" hidden> <!-- hidden input to get the id of patient - to create treatment model object-->
+                    <p>Patient: <input type="text" id="treatment-popup-patient" name="patient"  readonly></p>
+                    <input type="text" name="gov_id" id="treatment-popup-patient-id"  hidden> <!-- hidden input to get the id of patient - to create treatment model object-->
                     <p>Description: <textarea name="description" id="" cols="30" rows="10" value="" required></textarea></p>
                     <p>Medicaments: <textarea name="medicaments" id="" cols="15" rows="2" value="" required></textarea></p>
                     <p>Set date: <input type="date" name="date" id="" required></p>
@@ -306,7 +317,13 @@
 
     <!-- JS to show 'make-new-treatment' and 'see-treatment-history' popups -->
     <script>
-        function show_treatment_popup(){
+        function show_treatment_popup(patient, patient_id){
+            //console.log(patient.val(), patient_id.val())
+            
+            //set popups vals to patient's
+            $('#treatment-popup-patient').val(patient.val());
+            $('#treatment-popup-patient-id').val(patient_id.val());
+
             document.getElementById('treatment-popup').style.visibility="visible";
         }
 
@@ -315,12 +332,13 @@
         }
 
         //popup to edit
-        function show_treatment_history(){
-            document.getElementById('treatment-history').style.visibility = "visible";
+        function show_treatment_history(patient_id){
+            console.log('#treatment-history-'+patient_id.val())
+            document.getElementById('treatment-history-'+patient_id.val()).style.visibility = "visible";
         }
 
-        function close_treatment_history(){
-            document.getElementById('treatment-history').style.visibility = "hidden";
+        function close_treatment_history(treatment_history_div){
+            treatment_history_div.css("visibility","hidden")
         }
 
     </script>
