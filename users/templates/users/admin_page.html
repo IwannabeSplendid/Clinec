@@ -1,5 +1,4 @@
-{% extends 'users/layout.html' %}
-{% block head %}
+{% extends 'users/layout.html' %}{% block head %}
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>{{request.user.username}}</title>
 	<meta name="description" content="" />
@@ -18,143 +17,38 @@
 		<div class="py-6 sm:py-8 lg:py-12">
 			<div class="px-4 mx-auto max-w-7xl md:px-8">
 				<div class="max-w-[768px] mx-auto mb-10 md:mb-16">
-					<h2 class="text-gray-800 text-2xl lg:text-3xl font-bold text-center mb-4 md:mb-6">Personal page</h2>
-					<div class="">
-						<div class="max-w-[768px] flex items-center justify-center mt-[8px] -mb-[8px] lg:justify-start">
-							<div class="w-16 h-16 mr-4 overflow-hidden"><img class="object-cover w-full h-full rounded-full bg-slate-50" alt="No alt" src="{{request.user.doctor.photo.url}}" /></div>
-							<div class="flex flex-col items-start justify-center">
-								<h4 class="text-gray-800 font-medium">Welcome, Dr. {{request.user.doctor.name}} {{request.user.doctor.surname}}!</h4>
-								<p class="text-gray-800">Here you can see your patients and appointments</p>
-							</div>
-						</div>
-					</div>
+					<h2 class="text-gray-800 text-2xl lg:text-3xl font-bold text-center mb-4 md:mb-6">Welcome, {{request.user.username}}!</h2>
 				</div>
+                <div class="max-w-screen-md mx-auto mb-10 grid grid-cols-3">
+                    <p class="col-span-2">Here you can update and register users</p>
+                    <a href="{% url 'register' %}" type="button" class="text-center transition duration-100 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-4 py-2 rounded-global">Register</a>
+                </div>
 				<div class="max-w-screen-md grid gap-4 mx-auto sm:grid-cols-2">
 					<div class="space-y-[20px]">
-						<p class="mb-[8px]">Appointments</p>
-						{% for appointment in user.doctor.appointments.all|dictsort:"date" %}
+						<p class="mb-[8px]">Update patients</p>
+                        {% for patient in patients %}
 						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{appointment.patient}}</label>
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{appointment.date}}</label>
+							<label class="col-span-2 font-medium inline-block text-gray-800 text-sm sm:text-base">{{ patient.name}} {{ patient.surname}}</label>
+							<a href="{% url 'update' role='Patient' id=patient.user_id %}" type="button" class="col-span-1 inline-block text-center transition duration-100 bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-white px-4 py-2 rounded-global">Update</a>
 						</div>
-						{% empty %}
-						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{appointment.patient}}</label>
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Status</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">There are no appointments yet scheduled</label>
-						</div>
-						{% endfor %}
+                        {% endfor %}
 					</div>
-					<div class="space-y-[20px]">
-						<p class="mb-[8px]">Treatments</p>
-						{% for patient in request.user.doctor.assigned_patients.all %}
+                    <div class="space-y-[20px]">
+						<p class="mb-[8px]">Update doctors</p>
+                        {% for doctor in doctors %}
 						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{patient}}</label>
-							{% for treatment in patient.treatments.all|dictsortreversed:"date" %}
-							{% if forloop.counter == 1 %}
-							<hr class="col-span-3" style="margin-top: 5px; margin-bottom: 5px;">
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Descr.</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.description}}</label>
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Medic.</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.medicaments}}</label>
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.date}}</label>
-							{% endif %}
-							{%empty%}
-              				<label class="col-span-3 inline-block text-gray-800 text-sm sm:text-base">There are no treatments yet</label>
-							{% endfor %}
-							<input type="hidden" value="{{patient}}" class="patient-repr">
-              				<input type="hidden" value="{{patient.gov_id}}" class="patient-id">
-							<button onclick="show_treatment_history($(this).parent().children('.patient-id')); show_mod();" class="text-white rounded-global mt-[10px] t-[10px] px-[0px] transition duration-100 bg-teal-500 hover:bg-teal-600 active:bg-teal-700 py-[5px] mr-[3px]">View</button>
-							<button onclick="show_treatment_popup($(this).parent().children('.patient-repr'), $(this).parent().children('.patient-id')); show_mod();" class="text-white rounded-global col-span-2 transition duration-100 bg-teal-500 hover:bg-teal-600 active:bg-teal-700 px-[0px] mt-[10px] py-[5px] ml-[3px]">Add treatment</button>
+							<label class="col-span-2 font-medium inline-block text-gray-800 text-sm sm:text-base">{{ doctor.name}} {{ doctor.surname}}</label>
+							<a href="{% url 'update' role='Doctor' id=doctor.user_id  %}" type="button" class="col-span-1 inline-block text-center transition duration-100 bg-teal-500 hover:bg-teal-600 active:bg-teal-700 text-white px-4 py-2 rounded-global">Update</a>
 						</div>
-						<!-- treatment history -->
-						<div id="modality">
-							<div id="treatment-history-{{patient.gov_id}}" class="treatment-history grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
-								<label class="col-span-3">Treatments<span style="float:right;cursor:pointer" onclick="close_treatment_history($(this).parent().parent()); close_mod();">❌</span></label>
-								{% for treatment in patient.treatments.all|dictsortreversed:"date" %}
-								<hr class="col-span-3" style="margin-top: 5px; margin-bottom: 5px;">
-								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Descr.</label>
-								<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.description}}</label>
-								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Medic.</label>
-								<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.medicaments}}</label>
-								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
-								<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.date}}</label>
-								{%empty%}
-								<label class="col-span-3 inline-block text-gray-800 text-sm sm:text-base">There are no treatments yet</label>
-								{% endfor %}
-							</div>
-						</div>
-						<!-- treatment popup :: has to be inside loop for patient info -->
-						<div id="modality">
-							<form class="grid grid-cols-3 border-[1px] rounded-global p-[15px]" id="treatment-popup" action="{%url 'treatment' %}" method="post">
-								{% csrf_token %}
-								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
-								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="text" name="patient" id="treatment-popup-patient" readonly>
-								<input type="text" name="gov_id" id="treatment-popup-patient-id" hidden>
-								<!-- hidden input to get the id of patient - to create treatment model object-->
-								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Descr.</label>
-								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="text" name="description" required>
-								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Medic.</label>
-								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="text" name="medicaments" required>
-								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
-								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="date" name="date" required>
-								<hr class="col-span-3" style="margin-top: 5px; margin-bottom: 5px;">
-								<label class="col-span-3">
-									<input class="" type="submit" value="Save treatment">
-									<button style="float:right;cursor:pointer" onclick="close_treatment_popup(); close_mod();">❌</button>
-								</label>
-							</form>
-						</div>
-						{% empty %}
-						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
-							<label class="col-span-3 inline-block text-gray-800 text-sm sm:text-base">There are no patients assigned to you yet</label>
-						</div>
-        			{% endfor %}
+                        {% endfor %}
 					</div>
 				</div>
 				<div class="max-w-[768px] mx-auto mt-[20px]">
 					<a class="font-medium text-blue-600 hover:underline" href="{% url 'logout' %}">Logout</a>
-					<span style="float:right;"><button id="chat-button" class="font-medium text-blue-600 hover:underline">Chats with patients</button></span>
 				</div>
 			</div>
 		</div>
 
-		<!-- chatdiv -->
-		<div id="chats" class="border-[1px] rounded-global p-[15px] gap-[5px]">
-			{% for patient in request.user.doctor.assigned_patients.all %} 
-			<p><button class="chat-buttons" onclick="chat_show($(this).parent().children('input').val())">{{patient}}</button>
-			<input type="hidden" value="{{patient.chatrooms.first.id}}"></p>
-			{% empty %}
-					You do not have patients yet
-			{% endfor %}
-		</div>
-	
-		<!-- chat popups with each patient -->
-		{% for patient in request.user.doctor.assigned_patients.all %}
-		<div class="chatroom-div border-[1px] rounded-global p-[15px] gap-[5px]" id="chatroom-{{patient.chatrooms.first.id}}">
-			<i>Chat with {{patient}}</i>
-			<!-- div of messages -->
-			<div class="chat-messages" id="chat-messages-{{patient.chatrooms.first.id}}"></div>
-			<!-- to show messages, design as a real chat -->
-			<form method="post" class="chat-form">
-				{%csrf_token%}
-				<!--classes, not id-s, because there are going to be a form per patient, and the values are accessed as the form's children that belong to those classes-->
-				<input type="text" value="" name="message" class="message_text border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" autocomplete="off">
-				<input type="submit" value="send" id="submit_button">
-				<!-- hidden inputs to pass chatroom_id via js-ajax -->
-				<input type="hidden" value="{{patient.chatrooms.first.id}}" class="chatroom_id">
-			</form>
-			<!-- button when clicked: close div and clear interval -->
-			<button id="close-chat-btn-{{patient.chatrooms.first.id}}">Close chat</button>
-		</div>
-		{% empty %}
-		<p>There are no assigned patients</p>
-		{% endfor %}
 		<!-- AlpineJS Library -->
 		<script defer src="https://unpkg.com/alpinejs@3.9.0/dist/cdn.min.js"></script>
 		<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
@@ -163,96 +57,6 @@
 				offset: 50,
 				duration: 800
 			});
-		</script>
-		<script>
-			function show_mod(){
-				document.getElementById('modality').style.visibility = "visible";
-			}
-			function close_mod(){
-          		document.getElementById('modality').style.visibility = "hidden";
-			}	
-		</script>
-		<!-- chat JS -->
-		<script>
-			let chat_opened = false;
-			//open and close chat
-			$('#chat-button').click(function(){
-				if (!chat_opened) {
-					document.getElementById('chats').style.visibility='visible';
-					document.getElementById('chat-button').textContent = 'Close';
-					chat_opened = true;
-				}
-				else {
-					document.getElementById('chats').style.visibility='hidden';
-					document.getElementById('chat-button').textContent = 'Chats with Patients';
-					chat_opened=false;
-				}
-			})
-			//function to show chatroom
-			function chat_show(chatroom_id){
-				//close chat choosing view
-				document.getElementById('chats').style.visibility='hidden';
-				//console.log(chatroom_id);
-				//show the chatroom
-				$('#chatroom-'+chatroom_id).css("visibility", "visible");
-				let chat_interval = setInterval(function(){
-					$.ajax({
-							type : 'GET',
-							url : 'updateMessages/'+ chatroom_id,
-							//take response (contains info of messages in chatroom) and show messages
-							success : function(response){
-									//empty the div
-									$('.chat-messages').empty();
-									//console.log(response.user)
-									for (var key in response.messages){
-											temp = "<hr><p><b>"+response.messages[key].username+"</b></p> <p>"+response.messages[key].message_text+"</p> <p>"+response.messages[key].date+"</p>";
-											$('#chat-messages-'+chatroom_id).append(temp);
-									}
-							}
-					});
-			}, 1000);
-				$('#close-chat-btn-'+chatroom_id).click(function(){
-						$(this).parent().css('visibility', 'hidden'); 
-						clearInterval(chat_interval);
-				});
-			}
-			//function using jquery syntax to (constantly check inputs from page? async-ly?)
-			$(document).on('submit', '.chat-form', function(e){
-				//prevent automatic refreshment when submitting - maybe the reason using ajax here
-				e.preventDefault()
-				$.ajax({
-					type: 'POST',
-					//getting chatroom_id using the hidden input inside the form, that has a val of chatroom_id set using jinja
-					url: 'send/'+$(this).children('.chatroom_id').val(),
-					data: {
-						message_text : $(this).children('.message_text').val(),
-						csrfmiddlewaretoken : $(this).children('input[name=csrfmiddlewaretoken]').val(),  //each form's csrf token
-					},
-					success : function(data){
-						console.log(data)
-					}
-				});
-				//empty the message field
-				$(this).children('.message_text').val("");
-			});
-		</script>
-		<script>
-			function show_treatment_popup(patient, patient_id){
-				//set popups vals to patient's
-				$('#treatment-popup-patient').val(patient.val());
-				$('#treatment-popup-patient-id').val(patient_id.val());
-				document.getElementById('treatment-popup').style.visibility="visible";
-			}
-			function close_treatment_popup(){
-				document.getElementById('treatment-popup').style.visibility="hidden";
-			}
-			function show_treatment_history(patient_id){
-				console.log('#treatment-history-'+patient_id.val())
-				document.getElementById('treatment-history-'+patient_id.val()).style.visibility = "visible";
-			}
-			function close_treatment_history(treatment_history_div){
-				treatment_history_div.css("visibility", "hidden")
-			}
 		</script>
 	</div>
 {% endblock %}
