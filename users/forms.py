@@ -9,8 +9,14 @@ class AppointmentForm(forms.ModelForm):
         fields = "__all__"
         
         labels = {
-    
+            "medical_service" : "Medical Service",
+            "date" : "Date",
         }
+        widgets = {
+            "medical_service": forms.HiddenInput(),
+            'date': forms.DateInput(attrs={'type': 'date'})
+        }
+
 
 class UserForm(UserCreationForm):
 
