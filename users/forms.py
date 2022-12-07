@@ -3,7 +3,18 @@ from .models import Appointment, Doctor, Patient, User
 from django.contrib.auth.forms import UserCreationForm
 
  
+medical_service_choices =[
+    ("consultation", "Consultation"),
+    ("examination", "Examination"),
+    ("treatment", "Assign new treatment"),
+]
 class AppointmentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AppointmentForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ["medical_service", 'date', 'patient', 'doctor']:
+            self.fields[fieldname].help_text = None
+            
     class Meta:
         model = Appointment
         fields = "__all__"
@@ -11,10 +22,14 @@ class AppointmentForm(forms.ModelForm):
         labels = {
             "medical_service" : "Medical Service",
             "date" : "Date",
+            "patient" : "Patient",
+            "doctor" : "Doctor"
         }
         widgets = {
-            "medical_service": forms.HiddenInput(),
-            'date': forms.DateInput(attrs={'type': 'date'})
+            "medical_service": forms.Select(attrs={'class': 'medical_service'}),
+            "date": forms.DateInput(attrs={'type': 'date', 'class': 'date'}),
+            "patient" : forms.Select(attrs={'class': 'patient'}),
+            "doctor" : forms.Select(attrs={'class': 'doctor'})
         }
 
 

@@ -31,7 +31,14 @@
     </p>
     <p>Date: <input type="date" name="date" required></p>
     <p><input type="submit" value="Make an appointment"></p> {% endcomment %}
-    {{ form.as_p }}
+
+    {% for field in form.visible_fields %}
+
+    <div class="fieldWrapper">
+        {{ field.label_tag }} {{ field }}
+    </div>
+    
+    {% endfor %}
     <p><input type="submit" value="Make an appointment"></p> 
 </form>
 

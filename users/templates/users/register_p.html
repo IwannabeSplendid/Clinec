@@ -15,9 +15,7 @@
     {% comment %} {{ form.as_p }} {% endcomment %}
     {% for field in form.visible_fields %}
 
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
+    {{ field.label_tag }} {{ field }}
     
     {% endfor %}
     <p><input type="submit" value="Register"></p> 

@@ -101,10 +101,16 @@ class Schedule(models.Model):
 
 
 #appointments
+medical_service_choices =[
+    ("consultation", "Consultation"),
+    ("examination", "Examination"),
+    ("treatment", "Assign new treatment"),
+]
+
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='appointments')
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='appointments')
-    medical_service = models.CharField(max_length = 50)
+    medical_service = models.CharField(max_length = 50, choices=medical_service_choices, default = "consultation")
     date = models.DateTimeField()
 
     def __str__(self):
