@@ -202,7 +202,6 @@ def appointment(request, id, h, day):
         elif date.weekday()==4:
             s = schedule.fri_hours
             schedule.fru_hours=s[:h-9]+'1'+s[h-8:]
-        print(schedule.mon_hours)
         schedule.save()
         
         return HttpResponseRedirect(reverse('personal'))
@@ -325,7 +324,6 @@ def register_p(request, id):
 @staff_member_required
 def register_d(request, id):
     form = DoctorForm()  
-    print(form.fields)
     if request.method == 'POST':
         data = request.POST.copy()
         data['user'] = str(id)

@@ -12,7 +12,13 @@
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token%}
-    {{ form.as_p }}
+    
+    {% for field in form.visible_fields %}
+
+    {{ field.label_tag }} {{ field }}
+    
+    {% endfor %}
+
     <p><input type="submit" value="Update"></p> 
     <button type='submit' value = "Delete" name="Delete">Delete</button>
 </form>
