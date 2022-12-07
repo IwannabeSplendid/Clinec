@@ -8,7 +8,9 @@ medical_service_choices =[
     ("examination", "Examination"),
     ("treatment", "Assign new treatment"),
 ]
+
 class AppointmentForm(forms.ModelForm):
+
     def __init__(self, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
 
@@ -20,15 +22,22 @@ class AppointmentForm(forms.ModelForm):
         fields = "__all__"
         
         labels = {
-            "medical_service" : "Medical Service",
+            "medical_service" : "Medical service",
             "date" : "Date",
             "doctor" : "Doctor"
         }
         widgets = {
-            "medical_service": forms.Select(attrs={'class': 'medical_service'}),
-            "date": forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'date'}),
+            "medical_service": forms.Select(attrs={
+                'class': 'medical_service col-span-2 border-gray-200 rounded-global'
+            }),
+            "date": forms.DateTimeInput(attrs={
+                'type': 'datetime-local',
+                'class': 'date col-span-2 border-gray-200 rounded-global'
+            }),
             "patient" : forms.HiddenInput(),
-            "doctor" : forms.Select(attrs={'class': 'doctor'})
+            "doctor" : forms.Select(attrs={
+                'class': 'doctor col-span-2 border-gray-200 rounded-global'
+            })
         }
 
 
@@ -110,4 +119,4 @@ class DoctorForm(forms.ModelForm):
         for fieldname in ["date_of_birth", "IIN", "gov_id", "name", "surname", "middle_name", "spec", 
                   "phone_number", "experience", "photo", "address", "category", "appointment_price", 
                   "education", "rating", "address", "user"] :
-            self.fields[fieldname].help_text = None
+            self.fields[fieldname].help_text = None2
