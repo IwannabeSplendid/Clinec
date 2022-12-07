@@ -8,16 +8,13 @@
 
 {%block body%}
 
-<h3>Patient registeration form</h3>
+<h3>Patient registration form</h3>
 
 <form method="post" enctype="multipart/form-data">
     {% csrf_token%}
-    {% comment %} {{ form.as_p }} {% endcomment %}
     {% for field in form.visible_fields %}
 
-    <div class="fieldWrapper">
-        {{ field.label_tag }} {{ field }}
-    </div>
+    {{ field.label_tag }} {{ field }}
     
     {% endfor %}
     <p><input type="submit" value="Register"></p> 
