@@ -74,8 +74,8 @@
             <p class="mb-[8px]">Appointments</p>
             <div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
               {%for appointment in request.user.patient.appointments.all|dictsortreversed:"date"%}
-							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">{{appointment.doctor}}</label>
-							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{appointment.date}}</label>
+							<label class="col-span-2 font-medium inline-block text-gray-800 text-sm sm:text-base">{{appointment.doctor}}</label>
+							<label class="col-span-1 inline-block text-gray-800 text-sm sm:text-base">{{appointment.date|date:"M j, g a"}}</label>
               {% empty %}
               <label class="col-span-3 inline-block text-gray-800 text-sm sm:text-base">There are no appointments yet</label>
               {% endfor %}

@@ -94,7 +94,7 @@ class Schedule(models.Model):
     wed_hours = models.CharField(max_length=9, default='000000000')
     thu_hours = models.CharField(max_length=9, default='000000000')
     fri_hours = models.CharField(max_length=9, default='000000000')
-    week = models.DateField(default='2022-11-28') # the day of the monday:
+    week = models.DateField(default='2022-12-05') # the day of the monday:
     
     def __str__(self):
         return f"The schedule of {self.doctor.name}"
