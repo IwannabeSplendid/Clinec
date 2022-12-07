@@ -90,6 +90,7 @@ def personal(request):
             user.email = request.POST["email"]
             user.save()
             user.patient.gov_id = request.POST["gov_id"]
+            user.patient.IIN = request.POST["gov_id"]
             user.patient.name = request.POST["name"]
             user.patient.surname = request.POST["surname"]
             user.patient.middle_name = request.POST["middle_name"]
@@ -177,13 +178,16 @@ def search(request, object, name):
 @login_required
 def appointment(request, id, h, day):
     if request.method == 'POST':
-        form = AppointmentForm(request.POST)
+        data = request.POST.copy()
+        data['patient'] = request.user
+        form = AppointmentForm(data)
+        
         if form.is_valid():
             form.save()
         
         #update schedule so that the time will not be available
         date = form['date'].value()
-        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+        date = datetime.strptime(date, '%Y-%m-%dT%H:%M')
         h = date.time().hour
         doctor = Doctor.objects.get(user_id=form['doctor'].value())
         schedule = Schedule.objects.filter(doctor=doctor)[0]
@@ -202,7 +206,6 @@ def appointment(request, id, h, day):
         elif date.weekday()==4:
             s = schedule.fri_hours
             schedule.fru_hours=s[:h-9]+'1'+s[h-8:]
-        print(schedule.mon_hours)
         schedule.save()
         
         return HttpResponseRedirect(reverse('personal'))
@@ -325,7 +328,6 @@ def register_p(request, id):
 @staff_member_required
 def register_d(request, id):
     form = DoctorForm()  
-    print(form.fields)
     if request.method == 'POST':
         data = request.POST.copy()
         data['user'] = str(id)

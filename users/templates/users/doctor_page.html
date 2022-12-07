@@ -1,392 +1,313 @@
 {% extends 'users/layout.html' %}
 {% block head %}
-
-    <title>{{request.user.username}}</title>
-
-    <style>
-        
-
-
-        .assigned_patients{
-            padding-left: 5%;
-            display: flex;
-            gap:20px;
-        }
-
-        .assigned_patients > *{
-            flex-flow: column;
-        }
-
-        #treatment-popup{
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            background-color: darkcyan;
-            border-radius: 10px;
-            visibility: hidden;
-        }
-        
-        .treatment-history{
-            visibility: hidden;
-            position:fixed;
-            top:20%;
-            left:20%;
-            width:40%;
-            background-color: darkorchid;
-            border-radius: 12px;
-        }
-
-        #chat-button{
-            position: fixed;
-            bottom: 5%;
-            right: 5%;            
-
-        }
-
-        #chats{
-            position: fixed;
-            bottom: 8%;
-            right: 5%;
-            border: 1px solid black;
-            border-radius: 5%;
-            background-color: white;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-
-            visibility: hidden;
-        }
-
-        .chatroom-div{
-            border: 1px solid black;
-            position: fixed;
-            bottom: 8%;
-            right: 5%;
-
-            visibility: hidden;
-        }
-    </style>
-
-    
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{request.user.username}}</title>
+	<meta name="description" content="" />
+	<link rel="icon" type="image/x-icon" href="https://ik.imagekit.io/n0uvizrukm2/websites/chai-cloud/Vector__2__H9Chm1ngK.svg">
+	<meta property="og:image" content="" />
+	<link id="heading-font" rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap" media="all" />
+	<script src="https://cdn.tailwindcss.com"></script>
+  	<style>
+    *,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[multiple],[type=date],[type=datetime-local],[type=email],[type=month],[type=number],[type=password],[type=search],[type=tel],[type=text],[type=time],[type=url],[type=week],select,textarea{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0;padding-top:.5rem;padding-right:.75rem;padding-bottom:.5rem;padding-left:.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000}[multiple]:focus,[type=date]:focus,[type=datetime-local]:focus,[type=email]:focus,[type=month]:focus,[type=number]:focus,[type=password]:focus,[type=search]:focus,[type=tel]:focus,[type=text]:focus,[type=time]:focus,[type=url]:focus,[type=week]:focus,select:focus,textarea:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);border-color:#2563eb}input::-moz-placeholder,textarea::-moz-placeholder{color:#6b7280;opacity:1}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em}::-webkit-datetime-edit,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-meridiem-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-year-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right .5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;-webkit-print-color-adjust:exact;color-adjust:exact;print-color-adjust:exact}[multiple]{background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:.75rem;-webkit-print-color-adjust:unset;color-adjust:unset;print-color-adjust:unset}[type=checkbox],[type=radio]{-webkit-appearance:none;-moz-appearance:none;appearance:none;padding:0;-webkit-print-color-adjust:exact;color-adjust:exact;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;-moz-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type=checkbox]{border-radius:0}[type=radio]{border-radius:100%}[type=checkbox]:focus,[type=radio]:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}[type=checkbox]:checked,[type=radio]:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type=checkbox]:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e")}[type=radio]:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e")}[type=checkbox]:checked:focus,[type=checkbox]:checked:hover,[type=radio]:checked:focus,[type=radio]:checked:hover{border-color:transparent;background-color:currentColor}[type=checkbox]:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type=checkbox]:indeterminate:focus,[type=checkbox]:indeterminate:hover{border-color:transparent;background-color:currentColor}[type=file]{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type=file]:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}*,::after,::before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::-webkit-backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.order-last{order:9999}.col-span-1{grid-column:span 1/span 1}.col-span-3{grid-column:span 3/span 3}.col-span-2{grid-column:span 2/span 2}.mx-auto{margin-left:auto;margin-right:auto}.mb-10{margin-bottom:2.5rem}.mb-4{margin-bottom:1rem}.mt-\[8px\]{margin-top:8px}.-mb-\[8px\]{margin-bottom:-8px}.mr-4{margin-right:1rem}.mb-\[8px\]{margin-bottom:8px}.mt-\[10px\]{margin-top:10px}.mr-\[3px\]{margin-right:3px}.ml-\[3px\]{margin-left:3px}.mt-\[20px\]{margin-top:20px}.mb-6{margin-bottom:1.5rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.h-16{height:4rem}.h-full{height:100%}.w-16{width:4rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.max-w-\[768px\]{max-width:768px}.max-w-screen-md{max-width:768px}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.gap-4{gap:1rem}.gap-\[5px\]{gap:5px}.space-y-\[20px\]>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(20px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(20px * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.rounded-full{border-radius:9999px}.rounded-global{border-radius:5px}.border-\[1px\]{border-width:1px}.bg-\[\#FFFFFF\]{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-slate-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity))}.bg-teal-500{--tw-bg-opacity:1;background-color:rgb(20 184 166 / var(--tw-bg-opacity))}.object-cover{-o-object-fit:cover;object-fit:cover}.p-\[15px\]{padding:15px}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.px-4{padding-left:1rem;padding-right:1rem}.px-\[0px\]{padding-left:0;padding-right:0}.py-\[5px\]{padding-top:5px;padding-bottom:5px}.py-12{padding-top:3rem;padding-bottom:3rem}.px-8{padding-left:2rem;padding-right:2rem}.text-center{text-align:center}.font-body{font-family:DM Sans,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"}.text-2xl{font-size:1.5rem;line-height:2rem}.text-sm{font-size:.875rem;line-height:1.25rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.text-\[\#41454c\]{--tw-text-opacity:1;color:rgb(65 69 76 / var(--tw-text-opacity))}.text-gray-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.dark .dark\:bg-\[\#000000\]{--tw-bg-opacity:1;background-color:rgb(0 0 0 / var(--tw-bg-opacity))}.dark .dark\:text-\[\#b3c3d9\]{--tw-text-opacity:1;color:rgb(179 195 217 / var(--tw-text-opacity))}@media (min-width:640px){.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:py-8{padding-top:2rem;padding-bottom:2rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}}@media (min-width:768px){.md\:mb-16{margin-bottom:4rem}.md\:mb-6{margin-bottom:1.5rem}.md\:p-\[15px\]{padding:15px}.md\:px-8{padding-left:2rem;padding-right:2rem}}@media (min-width:1024px){.lg\:col-span-1{grid-column:span 1/span 1}.lg\:col-span-2{grid-column:span 2/span 2}.lg\:mx-auto{margin-left:auto;margin-right:auto}.lg\:mt-\[20px\]{margin-top:20px}.lg\:grid{display:grid}.lg\:max-w-\[768px\]{max-width:768px}.lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.lg\:justify-start{justify-content:flex-start}.lg\:gap-\[16px\]{gap:16px}.lg\:gap-\[5px\]{gap:5px}.lg\:rounded-global{border-radius:5px}.lg\:border-\[1px\]{border-width:1px}.lg\:p-\[15px\]{padding:15px}.lg\:py-12{padding-top:3rem;padding-bottom:3rem}.lg\:text-3xl{font-size:1.875rem;line-height:2.25rem}.lg\:font-medium{font-weight:500}}@media (min-width:1280px){.xl\:mb-\[8px\]{margin-bottom:8px}}h1,h1 *,h2,h2 *,h3,h3 *,h4,h4 *,h5,h5 *,h6,h6 *{font-family:"DM Sans",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"}.border-gray-200{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity))}
+  	</style>
+	<style>
+		#modality {
+			align-items: center;
+			background: rgba(0, 0, 0, 0.7);
+			bottom: 0;
+			display: flex;
+			justify-content: center;
+			left: 0;
+			position: fixed;
+			right: 0;
+			top: -25px;
+			visibility: hidden;
+		}
+		.assigned_patients {
+			padding-left: 5%;
+			display: flex;
+			gap:20px;
+		}
+		.assigned_patients > *{
+			flex-flow: column;
+		}
+		#treatment-popup {
+			visibility: hidden;
+			position: fixed;
+			background-color: white;
+			box-shadow: 0 0 10px -2px rgba(146, 146, 146, 0.5);
+		}
+		.treatment-history {
+			visibility: hidden;
+			position: fixed;
+			background-color: white;
+			box-shadow: 0 0 10px -2px rgba(146, 146, 146, 0.5);
+		}
+		#chats {
+			position: fixed;
+			bottom: 8%;
+			right: 5%;
+			background-color: white;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-between;
+			visibility: hidden;
+			box-shadow: 0 0 10px -2px rgba(146, 146, 146, 0.5);
+		}
+		.chatroom-div {
+			position: fixed;
+			bottom: 8%;
+			right: 5%;
+			visibility: hidden;
+			box-shadow: 0 0 10px -2px rgba(146, 146, 146, 0.5);
+		}
+	</style>
+	<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 {% endblock %}
-
 
 {%block body%}
-
-    <div style="border: 1px solid pink">
-        <h3>personal page</h3>
-
-        <p><img src="{{request.user.doctor.photo.url}}" alt="{{request.user.doctor.photo.url}}" width="200px"></p>
-
-        <p>Doctor {{request.user.doctor.name}} {{request.user.doctor.surname}}</p>
-
-        <!-- Patients and their treatments -->
-        <!-- iterating through doctor's patients - patient model's objects :: accessing through user, through user the doctor model (extension model), through it the patients-->
-        
-        <strong>Patients</strong>
-        {% for patient in request.user.doctor.assigned_patients.all %}
-            
-            <div class="assigned_patients">
-                <div>{{patient}}</div>
-                <div>
-                    Treatments
-                    {% for treatment in patient.treatments.all|dictsortreversed:"date" %} <!-- iterating through treatments sorted by date, and showing only the first one (last assigned treatment) -->
-                    <div style="border: 1px solid red">
-                        {% if forloop.counter == 1 %}
-                            <p>Description: {{treatment.description}}</p>
-                            <p>Medicaments: {{treatment.medicaments}}</p>
-                            <p>Date: {{treatment.date}}</p>
-                        {%endif%}
-                    </div>
-                    {%empty%}
-                        <p><i>There are no treatments yet</i></p>
-                    {% endfor %}
-                
-
-                <!-- button to open popup to add treatment to this patient -->
-                <div >
-                    <p style="display: flex; flex-flow: row; gap: 5px;">
-                        <input type="hidden" value="{{patient}}" class="patient-repr">
-                        <input type="hidden" value="{{patient.gov_id}}" class="patient-id">
-                        <button onclick="show_treatment_popup($(this).parent().children('.patient-repr'), $(this).parent().children('.patient-id'))">Add treatment</button>
-                        <button onclick="show_treatment_history($(this).parent().children('.patient-id'))">View treatment history</button>
-                    </p>    
-
-                </div>
-                </div>
-            </div>
-
-
-            <!-- treatment history -->
-            <div class="treatment-history" id="treatment-history-{{patient.gov_id}}">
-                Treatments
-                {% for treatment in patient.treatments.all|dictsortreversed:"date" %} <!-- sorting by date in reverse -->
-                    <div style="border: 1px solid red">
-                        <p>Description: {{treatment.description}}</p>
-                        <p>Medicaments: {{treatment.medicaments}}</p>
-                        <p>Date: {{treatment.date}}</p>
-                    </div>
-                {%empty%}
-                    <i>There are no treatments yet</i>
-                {% endfor %}
-                
-                <p><button onclick="close_treatment_history($(this).parent().parent())">close</button></p>
-            </div>
-
-            <!-- treatment popup :: has to be inside loop for patient info -->
-            <div id="treatment-popup">
-                <form action="{%url 'treatment' %}" method="post">
-                    {% csrf_token %}
-                    <p>Patient: <input type="text" id="treatment-popup-patient" name="patient"  readonly></p>
-                    <input type="text" name="gov_id" id="treatment-popup-patient-id"  hidden> <!-- hidden input to get the id of patient - to create treatment model object-->
-                    <p>Description: <textarea name="description" id="" cols="30" rows="10" value="" required></textarea></p>
-                    <p>Medicaments: <textarea name="medicaments" id="" cols="15" rows="2" value="" required></textarea></p>
-                    <p>Set date: <input type="date" name="date" id="" required></p>
-                    <p><input type="submit" value="Save treatment"></p>
-                </form>
-                <button onclick="close_treatment_popup()">Close</button>
-            </div>
-
-        {%empty%}
-
-            <i>There are no assigned patients</i>
-
-        {% endfor %}
-    </div>
-
-    <br>
-
-
-    <!-- Appointments -->
-    <div style="border: 1px solid blue">
-        <h3>Appointments</h3>
-        {% for appointment in user.doctor.appointments.all|dictsort:"date" %}
-
-            <p>{{appointment}}</p>
-
-        {% empty %}
-
-            <p><i>There are no appointments yet scheduled</i></p>
-
-        {% endfor %}
-    </div>
-
-    <p></p>
-    <p><a href="{% url 'logout' %}">log out</a></p>
-
-
-
-    <!-- chatdiv -->
-    <div id="chats">
-        {% for patient in request.user.doctor.assigned_patients.all %} 
-            <p><button class="chat-buttons" onclick="chat_show($(this).parent().children('input').val())">{{patient}}</button>
-                <input type="hidden" value="{{patient.chatrooms.first.id}}"></p>
-        {% empty %}
-            You have not patients yet
-        {% endfor %}
-    </div>
-
-    <button id="chat-button">Chats with Patients</button>
-
-
-    <!-- chat popups with each patient -->
-    {% for patient in request.user.doctor.assigned_patients.all %}
-
-        <div class="chatroom-div" id="chatroom-{{patient.chatrooms.first.id}}">
-
-            <i>Chat with {{patient}}</i>
-
-            <!-- div of messages -->
-            <div class="chat-messages" id="chat-messages-{{patient.chatrooms.first.id}}">
-            </div>
-
-            <!-- to show messages, design as a real chat -->
-            <form method="post" class="chat-form">
-                {%csrf_token%}
-                <input type="text" value="" name="message" class="message_text" autocomplete="off">  <!--classes, not id-s, because there are going to be a form per patient, and the values are accessed as the form's children that belong to those classes-->
-                <input type="submit" value="send" id="submit_button">
-
-                <!-- hidden inputs to pass chatroom_id via js-ajax -->
-                <input type="hidden" value="{{patient.chatrooms.first.id}}" class="chatroom_id">
-            </form>
-
-            <!-- button when clicked: close div and clear interval -->
-            <button id="close-chat-btn-{{patient.chatrooms.first.id}}">Close chat</button>
-        </div>
-    {% empty %}
-        <p>There are no assigned patients</p>
-    {% endfor %}
-
-
-<!-- JS -->
-
-    <!-- chat JS -->
-    <script>
-        let chat_opened = false;
-
-        //open and close chat
-        $('#chat-button').click(function(){
-
-            if (!chat_opened){
-                document.getElementById('chats').style.visibility='visible';
-                document.getElementById('chat-button').textContent = 'Close';
-                chat_opened = true;
-            }
-            else{
-                document.getElementById('chats').style.visibility='hidden';
-                document.getElementById('chat-button').textContent = 'Chats with Patients';
-                chat_opened=false;
-            }
-        })
-
-
-        //function to show chatroom
-        function chat_show(chatroom_id){
-
-            //close chat choosing view
-            document.getElementById('chats').style.visibility='hidden';
-
-            //console.log(chatroom_id);
-
-            //show the chatroom
-            $('#chatroom-'+chatroom_id).css("visibility", "visible");
-
-            let chat_interval = setInterval(function(){
-
-                    $.ajax({
-                        type : 'GET',
-                        url : 'updateMessages/'+ chatroom_id,
-
-                        //take response (contains info of messages in chatroom) and show messages
-                        success : function(response){
-                            //empty the div
-                            $('.chat-messages').empty();
-
-                            //console.log(response.user)
-
-                            for (var key in response.messages){
-                                temp = "<hr><p><b>"+response.messages[key].username+"</b></p> <p>"+response.messages[key].message_text+"</p> <p>"+response.messages[key].date+"</p>";
-                                $('#chat-messages-'+chatroom_id).append(temp);
-                            }
-                        }
-                    });
-
-                }, 1000);
-
-            $('#close-chat-btn-'+chatroom_id).click(function(){
-                $(this).parent().css('visibility', 'hidden'); 
-                clearInterval(chat_interval);
-            });
-
-        }
-
-
-        //function using jquery syntax to (constantly check inputs from page? async-ly?)
-        $(document).on('submit', '.chat-form', function(e){
-
-            //prevent automatic refreshment when submitting - maybe the reason using ajax here
-            e.preventDefault()
-            
-            //console.log('chatroom id is' + $(this).children('.chatroom_id').val())
-
-            $.ajax({
-                type: 'POST',
-
-                //getting chatroom_id using the hidden input inside the form, that has a val of chatroom_id set using jinja
-                url: 'send/'+$(this).children('.chatroom_id').val(),
-
-                data:{
-                    message_text : $(this).children('.message_text').val(),
-                    csrfmiddlewaretoken : $(this).children('input[name=csrfmiddlewaretoken]').val(),  //each form's csrf token
-                },
-                success : function(data){
-                    //console.log(data)
-                }
-            });
-
-            //empty the message field
-            $(this).children('.message_text').val("");
-
-        });
-
-        //function to update the div of chat every second (1000 ms)
-
-    </script>
-
-    <!-- JS to show 'make-new-treatment' and 'see-treatment-history' popups -->
-    <script>
-        function show_treatment_popup(patient, patient_id){
-            //console.log(patient.val(), patient_id.val())
-            
-            //set popups vals to patient's
-            $('#treatment-popup-patient').val(patient.val());
-            $('#treatment-popup-patient-id').val(patient_id.val());
-
-            document.getElementById('treatment-popup').style.visibility="visible";
-        }
-
-        function close_treatment_popup(){
-            document.getElementById('treatment-popup').style.visibility="hidden";
-        }
-
-        //popup to edit
-        function show_treatment_history(patient_id){
-            console.log('#treatment-history-'+patient_id.val())
-            document.getElementById('treatment-history-'+patient_id.val()).style.visibility = "visible";
-        }
-
-        function close_treatment_history(treatment_history_div){
-            treatment_history_div.css("visibility","hidden");
-        }
-
-    </script>
-
+	<div class="font-body antialiased text-[#41454c] bg-[#FFFFFF]">
+		<div class="py-6 sm:py-8 lg:py-12">
+			<div class="px-4 mx-auto max-w-7xl md:px-8">
+				<div class="max-w-[768px] mx-auto mb-10 md:mb-16">
+					<h2 class="text-gray-800 text-2xl lg:text-3xl font-bold text-center mb-4 md:mb-6">Personal page</h2>
+					<div class="">
+						<div class="max-w-[768px] flex items-center justify-center mt-[8px] -mb-[8px] lg:justify-start">
+							<div class="w-16 h-16 mr-4 overflow-hidden"><img class="object-cover w-full h-full rounded-full bg-slate-50" alt="No alt" src="{{request.user.doctor.photo.url}}" /></div>
+							<div class="flex flex-col items-start justify-center">
+								<h4 class="text-gray-800 font-medium">Welcome, Dr. {{request.user.doctor.name}} {{request.user.doctor.surname}}!</h4>
+								<p class="text-gray-800">Here you can see your patients and appointments</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="max-w-screen-md grid gap-4 mx-auto sm:grid-cols-2">
+					<div class="space-y-[20px]">
+						<p class="mb-[8px]">Appointments</p>
+						{% for appointment in user.doctor.appointments.all|dictsort:"date" %}
+						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{appointment.patient}}</label>
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{appointment.date}}</label>
+						</div>
+						{% empty %}
+						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{appointment.patient}}</label>
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Status</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">There are no appointments yet scheduled</label>
+						</div>
+						{% endfor %}
+					</div>
+					<div class="space-y-[20px]">
+						<p class="mb-[8px]">Treatments</p>
+						{% for patient in request.user.doctor.assigned_patients.all %}
+						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{patient}}</label>
+							{% for treatment in patient.treatments.all|dictsortreversed:"date" %}
+							{% if forloop.counter == 1 %}
+							<hr class="col-span-3" style="margin-top: 5px; margin-bottom: 5px;">
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Descr.</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.description}}</label>
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Medic.</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.medicaments}}</label>
+							<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
+							<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.date}}</label>
+							{% endif %}
+							{%empty%}
+              				<label class="col-span-3 inline-block text-gray-800 text-sm sm:text-base">There are no treatments yet</label>
+							{% endfor %}
+							<input type="hidden" value="{{patient}}" class="patient-repr">
+              				<input type="hidden" value="{{patient.gov_id}}" class="patient-id">
+							<button onclick="show_treatment_history($(this).parent().children('.patient-id')); show_mod();" class="text-white rounded-global mt-[10px] t-[10px] px-[0px] transition duration-100 bg-teal-500 hover:bg-teal-600 active:bg-teal-700 py-[5px] mr-[3px]">View</button>
+							<button onclick="show_treatment_popup($(this).parent().children('.patient-repr'), $(this).parent().children('.patient-id')); show_mod();" class="text-white rounded-global col-span-2 transition duration-100 bg-teal-500 hover:bg-teal-600 active:bg-teal-700 px-[0px] mt-[10px] py-[5px] ml-[3px]">Add treatment</button>
+						</div>
+						<!-- treatment history -->
+						<div id="modality">
+							<div id="treatment-history-{{patient.gov_id}}" class="treatment-history grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
+								<label class="col-span-3">Treatments<span style="float:right;cursor:pointer" onclick="close_treatment_history($(this).parent().parent()); close_mod();">❌</span></label>
+								{% for treatment in patient.treatments.all|dictsortreversed:"date" %}
+								<hr class="col-span-3" style="margin-top: 5px; margin-bottom: 5px;">
+								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Descr.</label>
+								<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.description}}</label>
+								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Medic.</label>
+								<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.medicaments}}</label>
+								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
+								<label class="col-span-2 inline-block text-gray-800 text-sm sm:text-base">{{treatment.date}}</label>
+								{%empty%}
+								<label class="col-span-3 inline-block text-gray-800 text-sm sm:text-base">There are no treatments yet</label>
+								{% endfor %}
+							</div>
+						</div>
+						<!-- treatment popup :: has to be inside loop for patient info -->
+						<div id="modality">
+							<form class="grid grid-cols-3 border-[1px] rounded-global p-[15px]" id="treatment-popup" action="{%url 'treatment' %}" method="post">
+								{% csrf_token %}
+								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Patient</label>
+								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="text" name="patient" id="treatment-popup-patient" readonly>
+								<input type="text" name="gov_id" id="treatment-popup-patient-id" hidden>
+								<!-- hidden input to get the id of patient - to create treatment model object-->
+								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Descr.</label>
+								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="text" name="description" required>
+								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Medic.</label>
+								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="text" name="medicaments" required>
+								<label class="col-span-1 font-medium inline-block text-gray-800 text-sm sm:text-base">Date</label>
+								<input class="col-span-2 border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" type="date" name="date" required>
+								<hr class="col-span-3" style="margin-top: 5px; margin-bottom: 5px;">
+								<label class="col-span-3">
+									<input class="" type="submit" value="Save treatment">
+									<button style="float:right;cursor:pointer" onclick="close_treatment_popup(); close_mod();">❌</button>
+								</label>
+							</form>
+						</div>
+						{% empty %}
+						<div class="grid grid-cols-3 border-[1px] rounded-global p-[15px] gap-[5px]">
+							<label class="col-span-3 inline-block text-gray-800 text-sm sm:text-base">There are no patients assigned to you yet</label>
+						</div>
+        			{% endfor %}
+					</div>
+				</div>
+				<div class="max-w-[768px] mx-auto mt-[20px]">
+					<a class="font-medium text-blue-600 hover:underline" href="{% url 'logout' %}">Logout</a>
+					<span style="float:right;"><button id="chat-button" class="font-medium text-blue-600 hover:underline">Chats with patients</button></span>
+				</div>
+			</div>
+		</div>
+
+		<!-- chatdiv -->
+		<div id="chats" class="border-[1px] rounded-global p-[15px] gap-[5px]">
+			{% for patient in request.user.doctor.assigned_patients.all %} 
+			<p><button class="chat-buttons" onclick="chat_show($(this).parent().children('input').val())">{{patient}}</button>
+			<input type="hidden" value="{{patient.chatrooms.first.id}}"></p>
+			{% empty %}
+					You do not have patients yet
+			{% endfor %}
+		</div>
+	
+		<!-- chat popups with each patient -->
+		{% for patient in request.user.doctor.assigned_patients.all %}
+		<div class="chatroom-div border-[1px] rounded-global p-[15px] gap-[5px]" id="chatroom-{{patient.chatrooms.first.id}}">
+			<i>Chat with {{patient}}</i>
+			<!-- div of messages -->
+			<div class="chat-messages" id="chat-messages-{{patient.chatrooms.first.id}}"></div>
+			<!-- to show messages, design as a real chat -->
+			<form method="post" class="chat-form">
+				{%csrf_token%}
+				<!--classes, not id-s, because there are going to be a form per patient, and the values are accessed as the form's children that belong to those classes-->
+				<input type="text" value="" name="message" class="message_text border-[1px] border-gray-200 rounded-global inline-block text-gray-800 text-sm sm:text-base" autocomplete="off">
+				<input type="submit" value="send" id="submit_button">
+				<!-- hidden inputs to pass chatroom_id via js-ajax -->
+				<input type="hidden" value="{{patient.chatrooms.first.id}}" class="chatroom_id">
+			</form>
+			<!-- button when clicked: close div and clear interval -->
+			<button id="close-chat-btn-{{patient.chatrooms.first.id}}">Close chat</button>
+		</div>
+		{% empty %}
+		<p>There are no assigned patients</p>
+		{% endfor %}
+		<!-- AlpineJS Library -->
+		<script defer src="https://unpkg.com/alpinejs@3.9.0/dist/cdn.min.js"></script>
+		<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+		<script>
+			AOS.init({
+				offset: 50,
+				duration: 800
+			});
+		</script>
+		<script>
+			function show_mod(){
+				document.getElementById('modality').style.visibility = "visible";
+			}
+			function close_mod(){
+          		document.getElementById('modality').style.visibility = "hidden";
+			}	
+		</script>
+		<!-- chat JS -->
+		<script>
+			let chat_opened = false;
+			//open and close chat
+			$('#chat-button').click(function(){
+					if (!chat_opened){
+							document.getElementById('chats').style.visibility='visible';
+							document.getElementById('chat-button').textContent = 'Close';
+							chat_opened = true;
+					}
+					else{
+							document.getElementById('chats').style.visibility='hidden';
+							document.getElementById('chat-button').textContent = 'Chats with Patients';
+							chat_opened=false;
+					}
+			})
+			//function to show chatroom
+			function chat_show(chatroom_id){
+				//close chat choosing view
+				document.getElementById('chats').style.visibility='hidden';
+				//console.log(chatroom_id);
+				//show the chatroom
+				$('#chatroom-'+chatroom_id).css("visibility", "visible");
+				let chat_interval = setInterval(function(){
+					$.ajax({
+							type : 'GET',
+							url : 'updateMessages/'+ chatroom_id,
+							//take response (contains info of messages in chatroom) and show messages
+							success : function(response){
+									//empty the div
+									$('.chat-messages').empty();
+									//console.log(response.user)
+									for (var key in response.messages){
+											temp = "<hr><p><b>"+response.messages[key].username+"</b></p> <p>"+response.messages[key].message_text+"</p> <p>"+response.messages[key].date+"</p>";
+											$('#chat-messages-'+chatroom_id).append(temp);
+									}
+							}
+					});
+			}, 1000);
+				$('#close-chat-btn-'+chatroom_id).click(function(){
+						$(this).parent().css('visibility', 'hidden'); 
+						clearInterval(chat_interval);
+				});
+			}
+			//function using jquery syntax to (constantly check inputs from page? async-ly?)
+			$(document).on('submit', '.chat-form', function(e){
+				//prevent automatic refreshment when submitting - maybe the reason using ajax here
+				e.preventDefault()
+				$.ajax({
+					type: 'POST',
+					//getting chatroom_id using the hidden input inside the form, that has a val of chatroom_id set using jinja
+					url: 'send/'+$(this).children('.chatroom_id').val(),
+					data: {
+						message_text : $(this).children('.message_text').val(),
+						csrfmiddlewaretoken : $(this).children('input[name=csrfmiddlewaretoken]').val(),  //each form's csrf token
+					},
+					success : function(data){
+						console.log(data)
+					}
+				});
+				//empty the message field
+				$(this).children('.message_text').val("");
+			});
+				//function to update the div of chat every second (1000 ms)
+		</script>
+		<script>
+			function show_treatment_popup(patient, patient_id){
+							//set popups vals to patient's
+							$('#treatment-popup-patient').val(patient.val());
+							$('#treatment-popup-patient-id').val(patient_id.val());
+				document.getElementById('treatment-popup').style.visibility="visible";
+			}
+			function close_treatment_popup(){
+				document.getElementById('treatment-popup').style.visibility="hidden";
+			}
+			function show_treatment_history(patient_id){
+							console.log('#treatment-history-'+patient_id.val())
+							document.getElementById('treatment-history-'+patient_id.val()).style.visibility = "visible";
+			}
+			function close_treatment_history(treatment_history_div){
+				treatment_history_div.css("visibility", "hidden")
+			}
+		</script>
+	</div>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-
-            setInterval(function(){
-
-                //for each div in 'chat-messages' class
-                $('.chat-messages').each(function(){
-                    
-                    //getting chatroom id from this div's brother's val
-                    chatroom_id = $(this).parent().children('input').val()
-                    //console.log(chatroom_id)
-
-                    $.ajax({
-                        type : 'GET',
-                        url : 'updateMessages/'+ chatroom_id,
-
-                        //take response (contains info of messages in chatroom) and show messages
-                        success : function(response){
-                            //empty the div
-                            $('.chat-messages').empty();
-
-                            //console.log(response.user)
-
-                            for (var key in response.messages){
-                                temp = "<hr><p><b>"+response.messages[key].username+"</b></p> <p>"+response.messages[key].message_text+"</p> <p>"+response.messages[key].date+"</p>";
-                                $('.chat-messages').append(temp);
-                            }
-                        }
-                    });
-                });
-
-                }, 1000);
-
-
- -->
