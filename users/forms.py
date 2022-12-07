@@ -22,13 +22,12 @@ class AppointmentForm(forms.ModelForm):
         labels = {
             "medical_service" : "Medical Service",
             "date" : "Date",
-            "patient" : "Patient",
             "doctor" : "Doctor"
         }
         widgets = {
             "medical_service": forms.Select(attrs={'class': 'medical_service'}),
             "date": forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'date'}),
-            "patient" : forms.Select(attrs={'class': 'patient'}),
+            "patient" : forms.HiddenInput(),
             "doctor" : forms.Select(attrs={'class': 'doctor'})
         }
 

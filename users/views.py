@@ -177,13 +177,16 @@ def search(request, object, name):
 @login_required
 def appointment(request, id, h, day):
     if request.method == 'POST':
-        form = AppointmentForm(request.POST)
+        data = request.POST.copy()
+        data['patient'] = request.user
+        form = AppointmentForm(data)
+        
         if form.is_valid():
             form.save()
         
         #update schedule so that the time will not be available
         date = form['date'].value()
-        date = datetime.strptime(date, '%Y-%m-%d %H:%M:%S')
+        date = datetime.strptime(date, '%Y-%m-%dT%H:%M')
         h = date.time().hour
         doctor = Doctor.objects.get(user_id=form['doctor'].value())
         schedule = Schedule.objects.filter(doctor=doctor)[0]
