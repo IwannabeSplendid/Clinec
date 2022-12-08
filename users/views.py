@@ -5,7 +5,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from datetime import datetime, timedelta
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 
@@ -170,9 +170,13 @@ def search(request, object, name):
     #     'doctors' :  doctors, 
     # })
     paginator = Paginator(doctors, 2)
-    page_number = request.GET.get('page')
+    page_number = int(request.GET.get('page', 1))
     page_obj = paginator.get_page(page_number)
-    return render(request, 'users/search.html', {'page_obj': page_obj})
+
+    num_pages = paginator.num_pages
+    pages = [i for i in range(1, num_pages+1)]
+
+    return render(request, 'users/search.html', {'page_obj': page_obj, 'num_pages': num_pages, 'object': object, 'name': name, 'pages': pages, 'current_page': page_number})
     
 #appointment
 @login_required
@@ -286,7 +290,12 @@ def register_view(request):
         if form.is_valid():
             form.save()
         else:
-            return render(request, 'users/register.html', {'form': form})    
+            username = request.POST['username']
+            if User.objects.filter(username=username):
+                error = 'Username already taken'
+            else:
+                error = 'The invalid password'
+            return render(request, 'users/register.html', {'form': form, 'error': error})    
         user = User.objects.filter(email = form['email'].value())[0]
         
         #create user admin

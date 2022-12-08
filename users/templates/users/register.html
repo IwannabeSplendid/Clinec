@@ -29,6 +29,11 @@
         </div>
         <form method="post" enctype="multipart/form-data" class="grid-cols-3 max-w-screen-md grid gap-4 mx-auto">
           {% csrf_token%}
+          {% if error %}
+          <p style="color:crimson;">{{error}}</p>
+          <br>
+          <p></p>
+          {% endif %}
           {% for field in form.visible_fields %}
           {{ field.label_tag }} {{ field }}
           {% endfor %}

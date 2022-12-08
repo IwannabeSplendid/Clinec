@@ -47,6 +47,18 @@
 					<a href="{% url 'appointment' id=d.doctor__user_id h=h day=d.fri_day%}" type="button" class="text-center my-[5px] mr-[8px] w-[90px] transition duration-100 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-4 py-2 rounded-global">{{h}}:00</a>
 					{% endfor %}
 					{% endfor %}
+					<div class="text-center">
+						{% if num_pages > 1 %}
+							<h6>Page Numbers</h6>
+							{% for page in pages %}
+							{% if page == current_page %}
+						<a href="{% url 'search' object name %}?page={{page}}"style="pointer-events:none">{{page}}</a>
+							{% else %}
+						<a href="{% url 'search' object name %}?page={{page}}" style="color:cornflowerblue">{{page}}</a>
+							{% endif %}
+						  {% endfor %}
+						{% endif %}
+					</div>
 				</div>
 			</section>
 		</div>
