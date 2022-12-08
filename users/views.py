@@ -312,10 +312,12 @@ def register_p(request, id):
     
     if request.method == 'POST':
         data = request.POST.copy()
-        data['user'] = str(id)
         form = PatientForm(data)
+        newform = form.save(commit=False)
+        user = User.objects.get(id=id)
+        newform.user = user
         if form.is_valid():
-            form.save()
+            newform.save()
                     
         return HttpResponseRedirect(reverse('personal'))
         
@@ -330,10 +332,12 @@ def register_d(request, id):
     form = DoctorForm()  
     if request.method == 'POST':
         data = request.POST.copy()
-        data['user'] = str(id)
         form = DoctorForm(data, request.FILES)
+        newform=form.save(commit=False)
+        user = User.objects.get(id=id)
+        newform.user = user
         if form.is_valid():
-            form.save()
+            newform.save()
         
         doctor = Doctor.objects.get(user_id=id)
         schedule = Schedule(doctor = doctor)
@@ -356,7 +360,6 @@ def update(request, role, id):
         if request.method == 'POST':
             if 'Delete' in request.POST:
                 user = User.objects.get(id = id)
-                patient.delete()
                 user.delete()
             else:
                 form = PatientForm(request.POST, instance=patient)
@@ -371,7 +374,6 @@ def update(request, role, id):
         if request.method == 'POST':
             if 'Delete' in request.POST:
                 user = User.objects.get(id = id)
-                doctor.delete()
                 user.delete()
             else:
                 form = DoctorForm(request.POST, request.FILES, instance=doctor)

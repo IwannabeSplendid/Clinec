@@ -67,7 +67,7 @@ class PatientForm(forms.ModelForm):
             "date_of_birth", "gov_id", "IIN", "name",
             "surname", "middle_name", "blood_group", "contact_close",
             "phone_number", "address", "marital_status",
-            "registration_date", "assigned_doctor", "user"
+            "registration_date", "assigned_doctor"
         ]
 
         widgets = {
